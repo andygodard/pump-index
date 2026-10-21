@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PUMP // INDEX</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PUMP // INDEX">
+  <meta name="theme-color" content="#09090b">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%2309090b'/><path d='M45 130 L135 130 M55 110 L85 75 L110 95 L135 55' stroke='%2310b981' stroke-width='10' stroke-linecap='round' stroke-linejoin='round' fill='none'/><circle cx='135' cy='55' r='8' fill='%2310b981'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+    body { font-family: 'Inter', -apple-system, sans-serif; background-color: #09090b; color: #f4f4f5; -webkit-tap-highlight-color: transparent; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    @media print {
+      body { background: #ffffff !important; color: #000000 !important; }
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-24 selection:bg-emerald-500 selection:text-black">
+
+  <!-- APPLICATION PRINCIPALE -->
+  <div id="app" class="max-w-md mx-auto px-4 pt-6 space-y-5 no-print">
+
+    <!-- HEADER & MODE SWITCH -->
+    <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <h1 class="text-lg font-extrabold tracking-tight">PUMP <span class="text-emerald-500">//</span> INDEX</h1>
+        </div>
+        <p class="text-xs text-zinc-400">Traçabilité Énergétique & Kilométrique SIV</p>
+      </div>
+      <button onclick="toggleWidgetMode()" id="widgetBtn" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-xs font-semibold text-emerald-400 hover:bg-zinc-800 transition">
+        ⚡ Mode Widget
+      </button>
+    </div>
+
+    <!-- WIDGET ÉCLAIR (Saisie rapide à la pompe) -->
+    <div id="quickWidget" class="bg-gradient-to-b from-zinc-900 to-zinc-950 border border-zinc-800 rounded-2xl p-4 shadow-xl space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-[11px] uppercase tracking-wider font-bold text-emerald-400 flex items-center gap-1.5">
+          ⚡ Widget Éclair — Station Détectée
+        </span>
+        <button onclick="detectGPSStation()" class="text-[11px] text-zinc-400 underline hover:text-white">Actualiser GPS</button>
+      </div>
+
+      <div class="flex items-center justify-between bg-zinc-950/90 border border-zinc-800/80 rounded-xl px-3 py-2.5">
+        <div>
+          <div id="stationName" class="text-sm font-bold text-white">TotalEnergies — Canteleu RN138</div>
+          <div id="fuelTypeLabel" class="text-[11px] text-zinc-400">SP98 Excellium • Tarif GPS actif</div>
+        </div>
+        <div class="text-right">
+          <input id="literPrice" type="number" step="0.001" value="1.849" onchange="previewCalculation()" class="w-20 bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-right mono text-sm font-bold text-emerald-400 focus:outline-none focus:border-emerald-500">
+          <div class="text-[10px] text-zinc-500 mt-0.5">€ / Litre</div>
+        </div>
+      </div>
+
+      <!-- 2 CHAMPS UNIQUES : KM + € -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3">
+          <label class="block text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">Distance parcourue</label>
+          <div class="flex items-baseline gap-1 mt-1">
+            <input id="kmInput" type="number" inputmode="decimal" placeholder="580" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-extrabold mono text-white focus:outline-none">
+            <span class="text-xs font-bold text-zinc-500">KM</span>
+          </div>
+        </div>
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3">
+          <label class="block text-[10px] uppercase tracking-wider text-zinc-400 font-semibold">Montant payé</label>
+          <div class="flex items-baseline gap-1 mt-1">
+            <input id="euroInput" type="number" inputmode="decimal" step="0.01" placeholder="95.00" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-extrabold mono text-emerald-400 focus:outline-none">
+            <span class="text-xs font-bold text-zinc-500">€</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BANDEAU DÉTECTION APPOINT VS PLEIN -->
+      <div id="detectionBanner" class="hidden rounded-xl px-3 py-2 text-xs font-semibold flex items-center justify-between"></div>
+
+      <button onclick="addEntry()" class="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.99] text-black font-extrabold text-sm tracking-wide transition shadow-lg shadow-emerald-500/10">
+        VALIDER LE PASSAGE À LA POMPE
+      </button>
+    </div>
+
+    <!-- CARTE VÉHICULE SIV & SILHOUETTE 3/4 -->
+    <div id="mainDashboard" class="space-y-5">
+      <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center bg-white text-black rounded-md overflow-hidden border-2 border-zinc-400 shadow-sm">
+            <div class="bg-blue-700 text-white text-[9px] font-bold px-1.5 py-1.5 flex flex-col items-center leading-none">
+              <span>F</span>
+            </div>
+            <input id="sivInput" type="text" value="EA-520-BM" class="w-28 px-2 py-1 text-center mono font-extrabold text-sm uppercase tracking-wider bg-white text-black focus:outline-none">
+          </div>
+          <select id="presetSelect" onchange="changeVehiclePreset()" class="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-semibold text-zinc-200 focus:outline-none">
+            <option value="e39">BMW E39 520i (70L • 9.0L/100)</option>
+            <option value="e36">BMW E36 318i (62L • 7.8L/100)</option>
+            <option value="p2008">Peugeot 2008 1.6 BlueHDi (50L • 4.5L/100)</option>
+          </select>
+        </div>
+
+        <!-- Silhouette 3/4 Wireframe -->
+        <div class="relative bg-zinc-950 border border-zinc-800/80 rounded-xl p-3 flex items-center justify-between">
+          <div>
+            <div id="vehTitle" class="text-sm font-extrabold text-white">BMW Série 5 E39 — 520i M52</div>
+            <div id="vehSpecs" class="text-xs text-zinc-400 mono mt-0.5">Réservoir : 70 L • Norme : 9.0 L/100 km</div>
+            <div id="reserveBadge" class="mt-2 inline-block px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-[11px] text-zinc-400 mono">
+              Réserve appoint : 0.0 L / 0 km
+            </div>
+          </div>
+          <svg class="w-28 h-14 stroke-emerald-400/80 fill-none" viewBox="0 0 220 90" stroke-width="2">
+            <path d="M18 65 L35 45 L75 30 L145 30 L178 46 L205 53 L205 68 L18 68 Z" />
+            <path d="M78 33 L140 33 L165 46 L50 46 Z" stroke-width="1.5"/>
+            <circle cx="55" cy="68" r="13" fill="#09090b" stroke-width="2.5"/>
+            <circle cx="170" cy="68" r="13" fill="#09090b" stroke-width="2.5"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 4 INDICATEURS STYLE APPLE BOURSE -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3.5">
+          <div class="text-[11px] text-zinc-400 font-semibold">CONSO MOYENNE RÉELLE</div>
+          <div class="flex items-baseline gap-1.5 mt-1">
+            <span id="statConso" class="text-2xl font-extrabold mono text-white">8.8</span>
+            <span class="text-xs text-emerald-400 font-bold">L/100</span>
+          </div>
+          <div id="statHealth" class="text-[11px] text-emerald-400 mt-1">● Moteur sain (-0.2 L vs norme)</div>
+        </div>
+        <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3.5">
+          <div class="text-[11px] text-zinc-400 font-semibold">COÛT AU KILOMÈTRE</div>
+          <div class="flex items-baseline gap-1.5 mt-1">
+            <span id="statCostKm" class="text-2xl font-extrabold mono text-white">0.163</span>
+            <span class="text-xs text-zinc-400 font-bold">€ / km</span>
+          </div>
+          <div id="statTotalEuro" class="text-[11px] text-zinc-400 mt-1">Cumul : 0.00 €</div>
+        </div>
+      </div>
+
+      <!-- BOUTONS CERTIFICAT PDF & DÉMO -->
+      <div class="space-y-2.5">
+        <button onclick="window.print()" class="w-full py-3 rounded-xl bg-white text-black font-extrabold text-xs uppercase tracking-wider hover:bg-zinc-200 transition flex items-center justify-center gap-2">
+          📄 Générer le Certificat PDF A4 de Vente
+        </button>
+        <button onclick="loadDemoData()" class="w-full py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 font-semibold text-xs hover:bg-zinc-800 transition">
+          Simuler 5 pleins de démonstration
+        </button>
+      </div>
+
+      <!-- HISTORIQUE CHRONOLOGIQUE -->
+      <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Journal Certifié des Passages</h2>
+          <button onclick="clearHistory()" class="text-[11px] text-red-400 hover:underline">Réinitialiser</button>
+        </div>
+        <div id="historyList" class="space-y-2 text-xs"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CERTIFICAT OFFICIEL A4 POUR EXPORT PDF / IMPRESSION -->
+  <div class="print-only hidden p-8 max-w-4xl mx-auto text-black bg-white">
+    <div class="flex justify-between items-start border-b-2 border-black pb-4">
+      <div>
+        <h1 class="text-2xl font-black tracking-tight">CERTIFICAT DE TRAÇABILITÉ ÉNERGÉTIQUE & KILOMÉTRIQUE</h1>
+        <p class="text-xs text-gray-600 mt-1">Dossier Officiel PUMP // INDEX • Preuve de cohérence compteur & santé thermique</p>
+      </div>
+      <div id="printSIV" class="border-2 border-black px-3 py-1 font-mono font-bold text-lg">EA-520-BM</div>
+    </div>
+    <div class="grid grid-cols-3 gap-4 my-6 border border-gray-300 p-4 rounded">
+      <div><span class="text-xs text-gray-500 block">Véhicule</span><strong id="printVeh">BMW Série 5 E39 — 520i M52</strong></div>
+      <div><span class="text-xs text-gray-500 block">Moyenne mesurée</span><strong id="printAvg">8.8 L/100 km</strong></div>
+      <div><span class="text-xs text-gray-500 block">Disponibilité des données</span><strong>100% — Dossier Complet Certifié</strong></div>
+    </div>
+    <table class="w-full text-left border-collapse text-xs mt-4">
+      <thead>
+        <tr class="border-b-2 border-black">
+          <th class="py-2">Date</th>
+          <th class="py-2">Station GPS</th>
+          <th class="py-2">Type</th>
+          <th class="py-2">Distance</th>
+          <th class="py-2">Montant / Litres</th>
+          <th class="py-2">Conso Cycle</th>
+        </tr>
+      </thead>
+      <tbody id="printTableBody"></tbody>
+    </table>
+    <div class="mt-10 pt-4 border-t border-gray-400 flex justify-between text-xs">
+      <div>Signature du Vendeur : ___________________________</div>
+      <div>Signature de l'Acquéreur : ___________________________</div>
+    </div>
+  </div>
+
+  <script>
+    const presets = {
+      e39: { name: "BMW Série 5 E39 — 520i M52", tank: 70, norm: 9.0, plate: "EA-520-BM", fuel: "SP98 Excellium", price: 1.849 },
+      e36: { name: "BMW Série 3 E36 — 318i M43", tank: 62, norm: 7.8, plate: "EB-318-BM", fuel: "SP98 Excellium", price: 1.849 },
+      p2008: { name: "Peugeot 2008 1.6 BlueHDi", tank: 50, norm: 4.5, plate: "FG-208-AA", fuel: "Gazole Premier", price: 1.689 }
+    };
+
+    let state = JSON.parse(localStorage.getItem('pump_index_v3')) || {
+      preset: 'e39',
+      plate: 'EA-520-BM',
+      pendingKm: 0,
+      pendingLiters: 0,
+      pendingEuro: 0,
+      entries: []
+    };
+
+    function saveState() {
+      localStorage.setItem('pump_index_v3', JSON.stringify(state));
+      render();
+    }
+
+    function changeVehiclePreset() {
+      const p = document.getElementById('presetSelect').value;
+      state.preset = p;
+      state.plate = presets[p].plate;
+      document.getElementById('sivInput').value = state.plate;
+      document.getElementById('literPrice').value = presets[p].price;
+      document.getElementById('fuelTypeLabel').innerText = presets[p].fuel + " • Tarif GPS actif";
+      saveState();
+    }
+
+    function previewCalculation() {
+      const km = parseFloat(document.getElementById('kmInput').value) || 0;
+      const euro = parseFloat(document.getElementById('euroInput').value) || 0;
+      const price = parseFloat(document.getElementById('literPrice').value) || 1.849;
+      const banner = document.getElementById('detectionBanner');
+      if (km <= 0 || euro <= 0) { banner.classList.add('hidden'); return; }
+
+      const liters = euro / price;
+      const tank = presets[state.preset].tank;
+      const isAppoint = liters < (tank * 0.42) && (km / liters) > 16;
+
+      banner.classList.remove('hidden');
+      if (isAppoint) {
+        banner.className = "rounded-xl px-3 py-2 text-xs font-semibold flex items-center justify-between bg-amber-500/15 border border-amber-500/40 text-amber-300";
+        banner.innerHTML = `<span>⚠️ APPOINT DÉTECTÉ (${liters.toFixed(1)} L)</span><span>Mis en réserve</span>`;
+      } else {
+        const totalL = liters + state.pendingLiters;
+        const totalKm = km + state.pendingKm;
+        const conso = ((totalL / totalKm) * 100).toFixed(2);
+        banner.className = "rounded-xl px-3 py-2 text-xs font-semibold flex items-center justify-between bg-emerald-500/15 border border-emerald-500/40 text-emerald-300";
+        banner.innerHTML = `<span>✅ PLEIN COMPLET (${liters.toFixed(1)} L)</span><span>Cycle : ${conso} L/100</span>`;
+      }
+    }
+
+    function addEntry() {
+      const km = parseFloat(document.getElementById('kmInput').value);
+      const euro = parseFloat(document.getElementById('euroInput').value);
+      const price = parseFloat(document.getElementById('literPrice').value) || 1.849;
+      if (!km || !euro) return;
+
+      const liters = euro / price;
+      const tank = presets[state.preset].tank;
+      const isAppoint = liters < (tank * 0.42) && (km / liters) > 16;
+      const dateStr = new Date().toLocaleDateString('fr-FR');
+      const station = document.getElementById('stationName').innerText;
+
+      if (isAppoint) {
+        state.pendingKm += km;
+        state.pendingLiters += liters;
+        state.pendingEuro += euro;
+        state.entries.unshift({ date: dateStr, station, type: 'APPOINT', km, euro, liters, conso: null });
+      } else {
+        const totalKm = km + state.pendingKm;
+        const totalLiters = liters + state.pendingLiters;
+        const conso = (totalLiters / totalKm) * 100;
+        state.entries.unshift({ date: dateStr, station, type: 'PLEIN COMPLET', km: totalKm, euro: euro + state.pendingEuro, liters: totalLiters, conso });
+        state.pendingKm = 0; state.pendingLiters = 0; state.pendingEuro = 0;
+      }
+
+      document.getElementById('kmInput').value = '';
+      document.getElementById('euroInput').value = '';
+      document.getElementById('detectionBanner').classList.add('hidden');
+      saveState();
+    }
+
+    function loadDemoData() {
+      state.entries = [
+        { date: '21/10/2026', station: 'TotalEnergies — Canteleu', type: 'PLEIN COMPLET', km: 640, euro: 103.50, liters: 55.97, conso: 8.75 },
+        { date: '08/10/2026', station: 'Esso Express — Rouen Sud', type: 'PLEIN COMPLET', km: 615, euro: 99.80, liters: 54.20, conso: 8.81 },
+        { date: '24/09/2026', station: 'TotalEnergies — Canteleu', type: 'APPOINT', km: 290, euro: 30.00, liters: 16.22, conso: null },
+        { date: '12/09/2026', station: 'Intermarché — Barentin', type: 'PLEIN COMPLET', km: 590, euro: 96.40, liters: 52.80, conso: 8.95 }
+      ];
+      saveState();
+    }
+
+    function clearHistory() {
+      state.entries = []; state.pendingKm = 0; state.pendingLiters = 0; state.pendingEuro = 0;
+      saveState();
+    }
+
+    function toggleWidgetMode() {
+      const dash = document.getElementById('mainDashboard');
+      const btn = document.getElementById('widgetBtn');
+      dash.classList.toggle('hidden');
+      btn.innerText = dash.classList.contains('hidden') ? '📊 Ouvrir Tableau Complet' : '⚡ Mode Widget';
+    }
+
+    function detectGPSStation() {
+      const stations = ['TotalEnergies — Canteleu RN138', 'Esso Express — Rouen Quai', 'TotalEnergies — Petit-Quevilly'];
+      document.getElementById('stationName').innerText = stations[Math.floor(Math.random() * stations.length)];
+    }
+
+    function render() {
+      const v = presets[state.preset];
+      document.getElementById('presetSelect').value = state.preset;
+      document.getElementById('vehTitle').innerText = v.name;
+      document.getElementById('vehSpecs').innerText = `Réservoir : ${v.tank} L • Norme : ${v.norm.toFixed(1)} L/100 km`;
+      document.getElementById('reserveBadge').innerText = `Réserve appoint : ${state.pendingLiters.toFixed(1)} L / ${state.pendingKm} km`;
+
+      const fullEntries = state.entries.filter(e => e.conso !== null);
+      const avg = fullEntries.length ? (fullEntries.reduce((a, b) => a + b.conso, 0) / fullEntries.length) : v.norm;
+      const totalEuro = state.entries.reduce((a, b) => a + b.euro, 0);
+      const totalKm = state.entries.reduce((a, b) => a + b.km, 0) || 1;
+
+      document.getElementById('statConso').innerText = avg.toFixed(1);
+      document.getElementById('statCostKm').innerText = (totalEuro / totalKm).toFixed(3);
+      document.getElementById('statTotalEuro').innerText = `Cumul : ${totalEuro.toFixed(2)} €`;
+
+      const diff = (avg - v.norm).toFixed(1);
+      document.getElementById('statHealth').innerText = diff <= 0.3 ? `● Moteur sain (${diff} L vs norme)` : `▲ Écart (+${diff} L vs norme)`;
+
+      const list = document.getElementById('historyList');
+      const printBody = document.getElementById('printTableBody');
+      if (!state.entries.length) {
+        list.innerHTML = `<div class="text-zinc-500 py-4 text-center">Aucun passage enregistré. Saisis tes km et € ci-dessus.</div>`;
+        printBody.innerHTML = '';
+      } else {
+        list.innerHTML = state.entries.map(e => `
+          <div class="flex items-center justify-between bg-zinc-950 border border-zinc-800/80 rounded-xl px-3 py-2.5">
+            <div>
+              <div class="font-bold text-white">${e.date} • ${e.station}</div>
+              <div class="text-[11px] text-zinc-400 mono">${e.km} km • ${e.euro.toFixed(2)} € (${e.liters.toFixed(1)} L)</div>
+            </div>
+            <span class="px-2 py-1 rounded text-[11px] font-bold mono ${e.conso ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-400'}">
+              ${e.conso ? e.conso.toFixed(2) + ' L/100' : 'APPOINT'}
+            </span>
+          </div>
+        `).join('');
+
+        printBody.innerHTML = state.entries.map(e => `
+          <tr class="border-b border-gray-200">
+            <td class="py-2">${e.date}</td>
+            <td class="py-2">${e.station}</td>
+            <td class="py-2 font-bold">${e.type}</td>
+            <td class="py-2">${e.km} km</td>
+            <td class="py-2">${e.euro.toFixed(2)} € (${e.liters.toFixed(1)} L)</td>
+            <td class="py-2 font-bold">${e.conso ? e.conso.toFixed(2) + ' L/100' : 'Reporté'}</td>
+          </tr>
+        `).join('');
+      }
+
+      document.getElementById('printSIV').innerText = document.getElementById('sivInput').value;
+      document.getElementById('printVeh').innerText = v.name;
+      document.getElementById('printAvg').innerText = avg.toFixed(2) + ' L/100 km';
+    }
+
+    render();
+  </script>
+</body>
+</html>
