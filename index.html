@@ -3,9 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <title>PUMP // INDEX</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,18 +12,20 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap');
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #09090b;
       color: #f4f4f5;
-      -webkit-tap-highlight-color: transparent;
       padding-top: env(safe-area-inset-top);
+      touch-action: manipulation;
     }
     .mono { font-family: 'JetBrains Mono', monospace; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    button { cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
     @media print {
       body { background: #ffffff !important; color: #000000 !important; padding: 0 !important; }
       .no-print { display: none !important; }
@@ -39,82 +38,82 @@
   <!-- APPLICATION MOBILE -->
   <div id="app" class="max-w-md mx-auto px-4 pt-4 space-y-4 no-print">
 
-    <!-- HEADER v7 -->
+    <!-- HEADER v8 -->
     <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3.5">
       <div>
         <div class="flex items-center gap-2">
-          <span id="gpsDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24] animate-pulse"></span>
-          <h1 class="text-base font-black tracking-tight">PUMP <span class="text-emerald-500">//</span> INDEX <span class="text-[10px] font-mono text-zinc-500">v7</span></h1>
+          <span id="gpsDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+          <h1 class="text-base font-black tracking-tight">PUMP <span class="text-emerald-500">//</span> INDEX <span class="text-[10px] font-mono text-emerald-400">v8</span></h1>
         </div>
         <p class="text-[11px] text-zinc-400 font-medium">Auto-Specs Constructeur & Prix Gouv.fr</p>
       </div>
       <div class="flex items-center gap-1.5">
-        <button onclick="forceAppRefresh()" title="Forcer la mise à jour" class="px-2.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-bold text-zinc-400 active:scale-95">
+        <button type="button" onclick="safeReloadApp()" class="px-2.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-bold text-zinc-300 active:scale-95">
           🔄
         </button>
-        <button onclick="toggleWidgetMode()" id="widgetBtn" class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-700/80 text-xs font-bold text-emerald-400 active:scale-95 transition">
+        <button type="button" onclick="toggleWidgetMode()" id="widgetBtn" class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-700/80 text-xs font-bold text-emerald-400 active:scale-95 transition">
           ⚡ Widget
         </button>
       </div>
     </div>
 
-    <!-- BOUTON D'AUTORISATION GPS iOS -->
-    <button id="iosGpsPromptBtn" onclick="requestIOSLocationWithUserGesture()" class="w-full py-3 px-4 rounded-2xl bg-emerald-500/15 border-2 border-emerald-500/60 text-emerald-300 font-extrabold text-xs flex items-center justify-between shadow-lg active:scale-[0.99] transition">
-      <span class="flex items-center gap-2">
+    <!-- BOUTON D'AUTORISATION GPS iOS (100% MANUEL AU TOUCHER POUR ÉVITER LE FREEZE SAFARI/PWA) -->
+    <button type="button" id="iosGpsPromptBtn" onclick="triggerUserGpsScan()" class="w-full py-3 px-4 rounded-2xl bg-emerald-500/15 border-2 border-emerald-500/60 text-emerald-300 font-extrabold text-xs flex items-center justify-between shadow-lg active:scale-[0.98] transition">
+      <span class="flex items-center gap-2 text-left">
         <span>📍</span>
-        <span>Activer le GPS iOS & Tarif Station Auto</span>
+        <span id="gpsBtnLabel"> Scanner la station GPS & les tarifs en direct</span>
       </span>
-      <span class="px-2 py-0.5 rounded bg-emerald-500 text-black font-black text-[10px] uppercase">Autoriser</span>
+      <span class="px-2.5 py-1 rounded-lg bg-emerald-500 text-black font-black text-[10px] uppercase shrink-0">Activer</span>
     </button>
 
     <!-- BARRE GARAGE -->
     <div class="space-y-2">
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Mon Garage Personnel</span>
-        <button onclick="openVehicleModal()" class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-lg active:scale-95 transition">
+        <button type="button" onclick="openVehicleModal()" class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-lg active:scale-95 transition">
           + Ajouter Auto / Moto
         </button>
       </div>
       <div id="vehiclePills" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1"></div>
     </div>
 
-    <!-- ÉCRAN GARAGE VIDE (S'AFFICHE TANT QU'AUCUN VÉHICULE N'EST CRÉÉ) -->
+    <!-- ÉCRAN GARAGE VIDE -->
     <div id="emptyGarageCard" class="hidden bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 text-center space-y-3">
       <div class="text-3xl">🏍️ 🚗</div>
       <h2 class="text-sm font-black uppercase tracking-wider text-white">Ton garage est vierge</h2>
       <p class="text-xs text-zinc-400 leading-relaxed">
-        Ajoute ta moto ou ta voiture : tape simplement la marque et le modèle, l'application recherche toute seule la taille exacte du réservoir en litres et la consommation constructeur.
+        Ajoute ta moto ou ta voiture : tape simplement la marque et le modèle, l'application trouve toute seule la capacité exacte du réservoir en litres et la consommation constructeur.
       </p>
-      <button onclick="openVehicleModal()" class="w-full py-3.5 rounded-xl bg-emerald-500 text-black font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/10">
+      <button type="button" onclick="openVehicleModal()" class="w-full py-3.5 rounded-xl bg-emerald-500 text-black font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/10 active:scale-95">
         + Configurer mon 1er Véhicule
       </button>
     </div>
 
-    <!-- CONTENU ACTIF (AFFICHÉ DÈS QU'UN VÉHICULE EXISTE) -->
+    <!-- CONTENU ACTIF -->
     <div id="activeVehicleContainer" class="space-y-4">
 
       <!-- WIDGET ÉCLAIR -->
       <div id="quickWidget" class="bg-gradient-to-b from-zinc-900/95 to-zinc-950 border border-zinc-800 rounded-2xl p-4 shadow-2xl space-y-3">
         <div class="flex items-center justify-between">
-          <span id="gpsStatusBadge" class="text-[10px] uppercase tracking-wider font-extrabold text-amber-400 flex items-center gap-1.5">
-            🛰️ En attente du signal GPS iOS...
+          <span id="gpsStatusBadge" class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-400 flex items-center gap-1.5">
+            🟢 Tarif Station Prêt
           </span>
-          <button onclick="requestIOSLocationWithUserGesture()" class="text-[11px] text-emerald-400 font-bold underline active:text-white">
-            Actualiser GPS
+          <button type="button" onclick="triggerUserGpsScan()" class="text-[11px] text-emerald-400 font-bold underline active:text-white">
+            Relocaliser GPS
           </button>
         </div>
 
-        <!-- STATION & SÉLECTEUR DE PISTOLET EN 1 TAP (95 / 98 / EXCELLIUM) -->
+        <!-- STATION & SÉLECTEUR DE PISTOLET EN 1 TAP -->
         <div class="bg-zinc-950 border border-zinc-800/90 rounded-xl p-3 space-y-2.5">
           <div class="flex items-center justify-between">
             <div class="pr-2 min-w-0 flex-1">
-              <div id="stationName" class="text-xs font-extrabold text-white truncate">Recherche de la station...</div>
+              <div id="stationName" class="text-xs font-extrabold text-white truncate">Canteleu — RN138 Route de Dieppe</div>
               <div id="fuelTypeLabel" class="text-[11px] text-emerald-400/90 font-semibold mt-0.5">Sélectionne ton pistolet ci-dessous</div>
             </div>
             <!-- PRIX AU LITRE AUTOMATIQUE -->
             <div class="text-right shrink-0 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-1.5">
               <div class="flex items-baseline justify-end gap-1">
-                <span id="autoPriceDisplay" class="mono text-lg font-black text-emerald-400">--.---</span>
+                <span id="autoPriceDisplay" class="mono text-lg font-black text-emerald-400">1.839</span>
                 <span class="text-[10px] text-emerald-300 font-bold">€/L</span>
               </div>
               <div class="text-[9px] uppercase tracking-wider text-zinc-400 font-bold">Auto Gouv.fr</div>
@@ -136,14 +135,14 @@
           <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3 focus-within:border-emerald-500/60 transition">
             <label class="block text-[10px] uppercase tracking-wider text-zinc-400 font-bold">Distance parcourue</label>
             <div class="flex items-baseline gap-1 mt-1">
-              <input id="kmInput" type="number" inputmode="decimal" placeholder="240" onfocus="ensureGpsOnFocus()" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-black mono text-white focus:outline-none">
+              <input id="kmInput" type="number" inputmode="decimal" placeholder="240" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-black mono text-white focus:outline-none">
               <span class="text-xs font-extrabold text-zinc-500">KM</span>
             </div>
           </div>
           <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3 focus-within:border-emerald-500/60 transition">
             <label class="block text-[10px] uppercase tracking-wider text-zinc-400 font-bold">Montant payé</label>
             <div class="flex items-baseline gap-1 mt-1">
-              <input id="euroInput" type="number" inputmode="decimal" step="0.01" placeholder="32.00" onfocus="ensureGpsOnFocus()" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-black mono text-emerald-400 focus:outline-none">
+              <input id="euroInput" type="number" inputmode="decimal" step="0.01" placeholder="32.00" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-black mono text-emerald-400 focus:outline-none">
               <span class="text-xs font-extrabold text-zinc-500">€</span>
             </div>
           </div>
@@ -151,7 +150,7 @@
 
         <div id="detectionBanner" class="hidden rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between"></div>
 
-        <button onclick="addEntry()" class="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.99] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/10">
+        <button type="button" onclick="addEntry()" class="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.99] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/10">
           Valider le passage à la pompe
         </button>
       </div>
@@ -228,7 +227,7 @@
         </div>
 
         <!-- BOUTON CERTIFICAT PDF -->
-        <button onclick="window.print()" class="w-full py-3.5 px-4 rounded-xl bg-white text-black font-black text-xs uppercase tracking-wide active:scale-95 transition">
+        <button type="button" onclick="window.print()" class="w-full py-3.5 px-4 rounded-xl bg-white text-black font-black text-xs uppercase tracking-wide active:scale-95 transition">
           📄 Générer le Certificat PDF A4 de Vente
         </button>
 
@@ -236,7 +235,7 @@
         <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between">
             <h2 class="text-xs font-extrabold uppercase tracking-wider text-zinc-400">Journal Certifié du Véhicule</h2>
-            <button onclick="clearHistory()" class="text-[11px] text-red-400 font-semibold">Vider l'historique</button>
+            <button type="button" onclick="clearHistory()" class="text-[11px] text-red-400 font-semibold">Vider l'historique</button>
           </div>
           <div id="historyList" class="space-y-2 text-xs"></div>
         </div>
@@ -252,11 +251,10 @@
           <h3 class="text-sm font-black uppercase tracking-wider text-white">Nouveau Véhicule (Auto / Moto)</h3>
           <p class="text-[10px] text-emerald-400 font-semibold">Recherche automatique du réservoir en Litres</p>
         </div>
-        <button onclick="closeVehicleModal()" class="text-zinc-400 hover:text-white text-lg font-bold leading-none">&times;</button>
+        <button type="button" onclick="closeVehicleModal()" class="text-zinc-400 hover:text-white text-xl font-bold leading-none px-2">&times;</button>
       </div>
 
       <div class="space-y-3 text-xs">
-        <!-- CHOIX CATÉGORIE AUTO / MOTO -->
         <div class="grid grid-cols-2 gap-2">
           <button type="button" id="catMotoBtn" onclick="setModalCategory('moto')" class="py-2 rounded-xl border font-bold text-xs transition bg-emerald-500 text-black border-emerald-400">
             🏍️ Moto
@@ -266,42 +264,16 @@
           </button>
         </div>
 
-        <!-- CHAMP UNIQUE DE RECHERCHE MARQUE & MODÈLE -->
         <div>
           <label class="block text-zinc-300 font-bold mb-1">Marque & Modèle exact</label>
           <div class="flex gap-1.5">
-            <input id="newVehName" type="text" placeholder="ex: BMW R1250GS, Yamaha MT-07, BMW E39 520i..." oninput="autoLookupSpecs()" class="flex-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-white font-bold focus:outline-none focus:border-emerald-500">
-            <button type="button" onclick="searchOnlineSpecs()" class="px-3 rounded-xl bg-zinc-800 border border-zinc-700 text-emerald-400 font-extrabold text-[11px] shrink-0">
+            <input id="newVehName" type="text" placeholder="ex: BMW R1250GS, MT-07, BMW E39 520i..." oninput="autoLookupSpecs()" class="flex-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-white font-bold focus:outline-none focus:border-emerald-500">
+            <button type="button" onclick="searchOnlineSpecs(false)" class="px-3 rounded-xl bg-zinc-800 border border-zinc-700 text-emerald-400 font-extrabold text-[11px] shrink-0">
               🔍 Web
             </button>
           </div>
         </div>
 
-        <!-- RÉSULTAT AUTOMATIQUE DU RÉSERVOIR DÉTECTÉ (SANS SAISIE OBLIGATOIRE) -->
         <div id="autoSpecResultBox" class="bg-zinc-950 border border-emerald-500/40 rounded-xl p-3 space-y-1.5">
           <div class="flex items-center justify-between">
-            <span id="specStatusText" class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-400">
-              ⚡ Fiche Constructeur Détectée
-            </span>
-            <button type="button" onclick="toggleManualSpecEdit()" class="text-[10px] text-zinc-400 underline">Ajuster</button>
-          </div>
-          <div class="flex items-center justify-between pt-1">
-            <div>
-              <span class="text-[10px] text-zinc-400 block">Capacité Réservoir</span>
-              <span id="detectedTankLabel" class="mono text-base font-black text-white">17.0 Litres</span>
-            </div>
-            <div class="text-right">
-              <span class="text-[10px] text-zinc-400 block">Conso Norme</span>
-              <span id="detectedNormLabel" class="mono text-base font-black text-emerald-400">4.5 L/100</span>
-            </div>
-          </div>
-          <!-- Champs cachés sauf si clic sur Ajuster -->
-          <div id="manualSpecInputs" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-zinc-800">
-            <input id="newVehTank" type="number" step="0.5" value="17" oninput="syncManualSpecLabels()" class="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-white mono font-bold text-xs">
-            <input id="newVehNorm" type="number" step="0.1" value="4.5" oninput="syncManualSpecLabels()" class="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-white mono font-bold text-xs">
-          </div>
-        </div>
-
-        <!-- PLAQUE & MOTORISATION (ESSENCE / DIESEL) -->
-        <div class="grid grid-cols-2 gap-2.5">
-          <div>
+            <span id="specStatusText" class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-40
