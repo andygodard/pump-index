@@ -276,4 +276,165 @@
 
         <div id="autoSpecResultBox" class="bg-zinc-950 border border-emerald-500/40 rounded-xl p-3 space-y-1.5">
           <div class="flex items-center justify-between">
-            <span id="specStatusText" class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-40
+            <span id="specStatusText" class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-400">
+              ⚡ Fiche Constructeur Détectée
+            </span>
+            <button type="button" onclick="toggleManualSpecEdit()" class="text-[10px] text-zinc-400 underline">Ajuster</button>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <div>
+              <span class="text-[10px] text-zinc-400 block">Capacité Réservoir</span>
+              <span id="detectedTankLabel" class="mono text-base font-black text-white">17.0 Litres</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-zinc-400 block">Conso Norme</span>
+              <span id="detectedNormLabel" class="mono text-base font-black text-emerald-400">4.5 L/100</span>
+            </div>
+          </div>
+          <div id="manualSpecInputs" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-zinc-800">
+            <input id="newVehTank" type="number" step="0.5" value="17" oninput="syncManualSpecLabels()" class="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-white mono font-bold text-xs">
+            <input id="newVehNorm" type="number" step="0.1" value="4.5" oninput="syncManualSpecLabels()" class="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-white mono font-bold text-xs">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-zinc-400 font-bold mb-1">Immatriculation SIV</label>
+            <input id="newVehPlate" type="text" maxlength="9" placeholder="AB-123-CD" oninput="formatSIV(this)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-white mono font-bold uppercase focus:outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block text-zinc-400 font-bold mb-1">Famille Moteur</label>
+            <select id="newVehEngineFamily" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-white font-bold focus:outline-none">
+              <option value="essence">Essence (95/98/E10)</option>
+              <option value="diesel">Diesel (Gazole/Excellium)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button type="button" onclick="closeVehicleModal()" class="flex-1 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 font-bold text-xs">Annuler</button>
+        <button type="button" onclick="saveNewVehicle()" class="flex-1 py-2.5 rounded-xl bg-emerald-500 text-black font-black text-xs uppercase">Ajouter au Garage</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CERTIFICAT OFFICIEL A4 POUR IMPRESSION / PDF -->
+  <div class="print-only hidden p-8 max-w-4xl mx-auto text-black bg-white">
+    <div class="flex justify-between items-start border-b-2 border-black pb-4">
+      <div>
+        <h1 class="text-2xl font-black tracking-tight">CERTIFICAT DE TRAÇABILITÉ ÉNERGÉTIQUE & KILOMÉTRIQUE</h1>
+        <p class="text-xs text-gray-600 mt-1">Dossier Officiel PUMP // INDEX • Preuve de cohérence compteur & qualité carburant</p>
+      </div>
+      <div id="printSIV" class="border-2 border-black px-3 py-1 font-mono font-bold text-lg">AA-000-AA</div>
+    </div>
+    <div class="grid grid-cols-3 gap-4 my-6 border border-gray-300 p-4 rounded">
+      <div><span class="text-xs text-gray-500 block">Véhicule</span><strong id="printVeh">-</strong></div>
+      <div><span class="text-xs text-gray-500 block">Moyenne mesurée</span><strong id="printAvg">-</strong></div>
+      <div><span class="text-xs text-gray-500 block">Traçabilité Carburant</span><strong>Certifiée (Standard / Excellium)</strong></div>
+    </div>
+    <table class="w-full text-left border-collapse text-xs mt-4">
+      <thead>
+        <tr class="border-b-2 border-black">
+          <th class="py-2">Date</th>
+          <th class="py-2">Station GPS</th>
+          <th class="py-2">Carburant choisi</th>
+          <th class="py-2">Distance</th>
+          <th class="py-2">Montant / Litres</th>
+          <th class="py-2">Conso Cycle</th>
+        </tr>
+      </thead>
+      <tbody id="printTableBody"></tbody>
+    </table>
+    <div class="mt-10 pt-4 border-t border-gray-400 flex justify-between text-xs">
+      <div>Signature du Vendeur : ___________________________</div>
+      <div>Signature de l'Acquéreur : ___________________________</div>
+    </div>
+  </div>
+
+  <script>
+    const KNOWN_SPECS_DB = [
+      { keys: ["mt-07", "mt07", "fz-07"], tank: 14.0, norm: 4.2, cat: "moto", engine: "essence", label: "Yamaha MT-07 (14.0 L)" },
+      { keys: ["mt-09", "mt09"], tank: 14.0, norm: 4.9, cat: "moto", engine: "essence", label: "Yamaha MT-09 (14.0 L)" },
+      { keys: ["tenere", "ténéré", "xtz700"], tank: 16.0, norm: 4.3, cat: "moto", engine: "essence", label: "Yamaha Ténéré 700 (16.0 L)" },
+      { keys: ["xmax", "x-max"], tank: 13.0, norm: 3.2, cat: "moto", engine: "essence", label: "Yamaha XMAX (13.0 L)" },
+      { keys: ["tmax", "t-max"], tank: 15.0, norm: 4.8, cat: "moto", engine: "essence", label: "Yamaha TMAX (15.0 L)" },
+      { keys: ["r1250gs", "1250 gs", "r 1250 gs", "r1200gs", "1200 gs", "1300 gs", "r1300gs"], tank: 20.0, norm: 4.75, cat: "moto", engine: "essence", label: "BMW R GS (20.0 L)" },
+      { keys: ["gsa", "gs adventure"], tank: 30.0, norm: 4.9, cat: "moto", engine: "essence", label: "BMW R GS Adventure (30.0 L)" },
+      { keys: ["s1000rr", "s 1000 rr", "s1000r", "s1000xr"], tank: 16.5, norm: 6.2, cat: "moto", engine: "essence", label: "BMW S 1000 (16.5 L)" },
+      { keys: ["f900r", "f 900 r", "f900xr"], tank: 13.0, norm: 4.2, cat: "moto", engine: "essence", label: "BMW F 900 R/XR (13.0 L)" },
+      { keys: ["f800", "f850", "f750"], tank: 15.0, norm: 4.2, cat: "moto", engine: "essence", label: "BMW Série F (15.0 L)" },
+      { keys: ["z900", "z 900"], tank: 17.0, norm: 5.7, cat: "moto", engine: "essence", label: "Kawasaki Z900 (17.0 L)" },
+      { keys: ["z650", "z 650", "er6", "er-6"], tank: 15.0, norm: 4.3, cat: "moto", engine: "essence", label: "Kawasaki Z650 / ER-6 (15.0 L)" },
+      { keys: ["z800", "z750", "z1000"], tank: 17.0, norm: 5.8, cat: "moto", engine: "essence", label: "Kawasaki Série Z (17.0 L)" },
+      { keys: ["cb650r", "cb 650", "cbr650"], tank: 15.4, norm: 4.9, cat: "moto", engine: "essence", label: "Honda CB650R (15.4 L)" },
+      { keys: ["cb500", "hornet", "cb750"], tank: 15.2, norm: 4.3, cat: "moto", engine: "essence", label: "Honda Hornet / CB (15.2 L)" },
+      { keys: ["africa twin", "crf1000", "crf1100"], tank: 18.8, norm: 4.9, cat: "moto", engine: "essence", label: "Honda Africa Twin (18.8 L)" },
+      { keys: ["gsx-s", "gsxs", "gsx-8s", "sv650", "bandit", "gsxr", "gsx-r"], tank: 14.5, norm: 4.5, cat: "moto", engine: "essence", label: "Suzuki (14.5 L)" },
+      { keys: ["street triple", "speed triple", "trident"], tank: 15.0, norm: 5.1, cat: "moto", engine: "essence", label: "Triumph Roadster (15.0 L)" },
+      { keys: ["tiger"], tank: 20.0, norm: 4.9, cat: "moto", engine: "essence", label: "Triumph Tiger (20.0 L)" },
+      { keys: ["monster", "hypermotard", "scrambler"], tank: 14.0, norm: 5.2, cat: "moto", engine: "essence", label: "Ducati (14.0 L)" },
+      { keys: ["multistrada"], tank: 22.0, norm: 5.8, cat: "moto", engine: "essence", label: "Ducati Multistrada (22.0 L)" },
+      { keys: ["duke", "super duke", "ktm"], tank: 14.8, norm: 4.8, cat: "moto", engine: "essence", label: "KTM Duke / Adventure (14.8 L)" },
+      { keys: ["harley", "sportster", "softail"], tank: 18.9, norm: 5.5, cat: "moto", engine: "essence", label: "Harley-Davidson (18.9 L)" },
+      { keys: ["e39", "520i", "523i", "525i", "528i", "530i", "530d", "525tds"], tank: 70.0, norm: 9.0, cat: "auto", engine: "essence", label: "BMW Série 5 E39 (70.0 L)" },
+      { keys: ["e36", "316i", "318i", "320i", "323i", "325i", "328i"], tank: 62.0, norm: 7.9, cat: "auto", engine: "essence", label: "BMW Série 3 E36 (62.0 L)" },
+      { keys: ["e46", "330ci", "330d", "320d"], tank: 63.0, norm: 7.5, cat: "auto", engine: "essence", label: "BMW Série 3 E46 (63.0 L)" },
+      { keys: ["2008", "bluehdi", "208", "hdi"], tank: 50.0, norm: 4.5, cat: "auto", engine: "diesel", label: "Peugeot 2008 / 208 (50.0 L)" },
+      { keys: ["308", "3008", "508"], tank: 53.0, norm: 5.1, cat: "auto", engine: "diesel", label: "Peugeot 308 / 3008 (53.0 L)" },
+      { keys: ["clio", "captur", "megane", "mégane", "dci"], tank: 48.0, norm: 4.8, cat: "auto", engine: "diesel", label: "Renault Clio / Mégane (48.0 L)" },
+      { keys: ["golf", "polo", "passat", "tdi", "tsi", "audi a3", "audi a4"], tank: 50.0, norm: 5.4, cat: "auto", engine: "essence", label: "VW / Audi (50.0 L)" }
+    ];
+
+    const ENGINE_FUEL_GRADES = {
+      essence: [
+        { id: "sp98_excellium", label: "SP98 Excellium / Suprême", apiKey: "sp98", offset: 0 },
+        { id: "sp95_pur", label: "SP95 Standard", apiKey: "sp95", offset: 0 },
+        { id: "e10", label: "SP95-E10", apiKey: "e10", offset: 0 },
+        { id: "e85", label: "Superéthanol E85", apiKey: "e85", offset: 0 }
+      ],
+      diesel: [
+        { id: "gazole_std", label: "Gazole Standard (B7)", apiKey: "gazole", offset: 0 },
+        { id: "gazole_excellium", label: "Gazole Excellium / Premium+", apiKey: "gazole", offset: 0.090 }
+      ]
+    };
+
+    const DEFAULT_STATIONS = [
+      { name: "Canteleu — RN138 Route de Dieppe", dist: 0.4, prices: { sp98: 1.839, sp95: 1.799, e10: 1.759, gazole: 1.679, e85: 0.849 } },
+      { name: "Rouen — Quai du Havre", dist: 2.1, prices: { sp98: 1.849, sp95: 1.809, e10: 1.769, gazole: 1.689, e85: 0.849 } },
+      { name: "Petit-Quevilly — Bd Stanislas", dist: 3.4, prices: { sp98: 1.799, sp95: 1.769, e10: 1.729, gazole: 1.649, e85: 0.829 } }
+    ];
+
+    let modalCat = 'moto';
+    let isScanningGps = false;
+
+    let state = null;
+    try {
+      state = JSON.parse(localStorage.getItem('pump_index_v8'));
+    } catch (e) { state = null; }
+
+    if (!state || typeof state !== 'object') {
+      state = {
+        vehicles: {},
+        activeId: null,
+        currentStation: DEFAULT_STATIONS[0].name,
+        rawStationPrices: DEFAULT_STATIONS[0].prices,
+        nearbyStations: DEFAULT_STATIONS
+      };
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('pump_index_v8', JSON.stringify(state));
+      } catch (e) {}
+      render();
+    }
+
+    function safeReloadApp() {
+      window.location.reload();
+    }
+
+    function setModalCategory(cat) {
+      modalCat = cat;
+      document.getElementById('catMotoBtn').className = cat === 'moto'
+        ? "py-2 rounded-xl border
