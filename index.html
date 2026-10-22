@@ -7,13 +7,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="PUMP // INDEX">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#12100e">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background-color: #000000;
-      color: #f5f5f7;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+      background-color: #12100e; /* Fond noir teinté chaud / cuir nuit */
+      color: #e7e2dc;
       -webkit-tap-highlight-color: transparent;
       padding-top: env(safe-area-inset-top);
       letter-spacing: -0.01em;
@@ -33,36 +33,36 @@
 
   <div id="app" class="max-w-md mx-auto px-4 pt-3 space-y-4 no-print">
 
-    <!-- HEADER STYLE APPLE BOURSE -->
-    <div class="flex items-center justify-between pb-2 border-b border-zinc-900">
+    <!-- HEADER CUIR & VERT SAPIN -->
+    <div class="flex items-center justify-between pb-3 border-b border-[#26211c]">
       <div>
-        <div class="flex items-center gap-1.5">
-          <span id="gpsDot" class="w-2 h-2 rounded-full bg-[#30D158]"></span>
-          <h1 class="text-lg font-black tracking-tight text-white">PUMP <span class="text-[#30D158]">//</span> INDEX</h1>
+        <div class="flex items-center gap-2">
+          <span id="gpsDot" class="w-2 h-2 rounded-full bg-[#2d6a4f]"></span>
+          <h1 class="text-lg font-black tracking-tight text-[#f4f1ea]">PUMP <span class="text-[#40916c]">//</span> INDEX</h1>
         </div>
-        <p class="text-[11px] text-zinc-500 font-medium">Marché Énergétique & SIV</p>
+        <p class="text-[11px] text-[#8c8275] font-medium">Édition Cuir & Vert Sapin SIV</p>
       </div>
       <div class="flex items-center gap-2">
-        <button type="button" onclick="hardResetApp()" class="px-2.5 py-1 rounded-full bg-zinc-900 text-[11px] font-semibold text-zinc-400 active:bg-zinc-800">
+        <button type="button" onclick="hardResetApp()" class="px-2.5 py-1 rounded-full bg-[#1c1815] border border-[#2b2520] text-[11px] font-semibold text-[#a3978b] active:bg-[#26211c]">
           Reset
         </button>
-        <button type="button" onclick="toggleWidgetMode()" id="widgetBtn" class="px-3 py-1 rounded-full bg-zinc-900 text-xs font-semibold text-[#30D158] active:bg-zinc-800">
+        <button type="button" onclick="toggleWidgetMode()" id="widgetBtn" class="px-3 py-1 rounded-full bg-[#1c1815] border border-[#2b2520] text-xs font-semibold text-[#52b788] active:bg-[#26211c]">
           ⚡ Widget
         </button>
       </div>
     </div>
 
     <!-- BOUTON GPS iOS -->
-    <button type="button" id="iosGpsPromptBtn" onclick="requestIOSLocation()" class="w-full py-2.5 px-4 rounded-xl bg-zinc-900/80 border border-zinc-800 text-[#30D158] font-semibold text-xs flex items-center justify-between active:bg-zinc-800">
+    <button type="button" id="iosGpsPromptBtn" onclick="requestIOSLocation()" class="w-full py-2.5 px-4 rounded-xl bg-[#1c1815] border border-[#2d241d] text-[#52b788] font-semibold text-xs flex items-center justify-between active:bg-[#26211c]">
       <span>📍 Synchroniser le GPS & Prix Gouv.fr</span>
-      <span class="text-xs font-bold text-[#30D158]">Activer</span>
+      <span class="text-xs font-bold text-[#74c69d]">Activer</span>
     </button>
 
-    <!-- BARRE GARAGE ÉPURÉE -->
+    <!-- BARRE GARAGE -->
     <div class="space-y-1.5">
       <div class="flex items-center justify-between px-1">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Garage</span>
-        <button type="button" onclick="openVehicleModal()" class="text-xs font-bold text-[#30D158] active:opacity-70">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-[#8c8275]">Garage</span>
+        <button type="button" onclick="openVehicleModal()" class="text-xs font-bold text-[#52b788] active:opacity-70">
           + Véhicule
         </button>
       </div>
@@ -70,11 +70,11 @@
     </div>
 
     <!-- ÉCRAN GARAGE VIDE -->
-    <div id="emptyGarageCard" class="hidden bg-zinc-950 border border-zinc-900 rounded-2xl p-6 text-center space-y-3">
+    <div id="emptyGarageCard" class="hidden bg-[#181411] border border-[#26211c] rounded-2xl p-6 text-center space-y-3">
       <div class="text-2xl">🚗 🏍️</div>
-      <h2 class="text-sm font-bold text-white">Aucun véhicule actif</h2>
-      <p class="text-xs text-zinc-500">Ajoute ton véhicule : le réservoir en litres est détecté automatiquement en ligne.</p>
-      <button type="button" onclick="openVehicleModal()" class="w-full py-3 rounded-xl bg-[#30D158] text-black font-bold text-xs">
+      <h2 class="text-sm font-bold text-[#f4f1ea]">Garage vide</h2>
+      <p class="text-xs text-[#8c8275]">Ajoute ton véhicule : le réservoir en litres est détecté automatiquement.</p>
+      <button type="button" onclick="openVehicleModal()" class="w-full py-3 rounded-xl bg-[#2d6a4f] text-[#f4f1ea] font-bold text-xs">
         + Ajouter un Véhicule
       </button>
     </div>
@@ -83,26 +83,26 @@
     <div id="activeVehicleContainer" class="space-y-3.5">
 
       <!-- WIDGET ÉCLAIR -->
-      <div class="bg-zinc-950 rounded-2xl p-4 space-y-3 border border-zinc-900/80">
+      <div class="bg-[#181411] rounded-2xl p-4 space-y-3 border border-[#26211c]">
         <div class="flex items-center justify-between">
-          <span id="gpsStatusBadge" class="text-[11px] font-semibold text-zinc-400">
+          <span id="gpsStatusBadge" class="text-[11px] font-semibold text-[#a3978b]">
             Station Gouv.fr Active
           </span>
-          <button type="button" onclick="requestIOSLocation()" class="text-[11px] text-[#30D158] font-medium">
+          <button type="button" onclick="requestIOSLocation()" class="text-[11px] text-[#52b788] font-medium">
             Actualiser
           </button>
         </div>
 
-        <div class="bg-black rounded-xl p-3 space-y-2.5 border border-zinc-900">
+        <div class="bg-[#12100e] rounded-xl p-3 space-y-2.5 border border-[#221c17]">
           <div class="flex items-center justify-between">
             <div class="pr-2 min-w-0 flex-1">
-              <div id="stationName" class="text-xs font-bold text-white truncate">Canteleu — RN138 Route de Dieppe</div>
-              <div id="fuelTypeLabel" class="text-[11px] text-zinc-400 mt-0.5">SP98 Excellium</div>
+              <div id="stationName" class="text-xs font-bold text-[#f4f1ea] truncate">Canteleu — RN138 Route de Dieppe</div>
+              <div id="fuelTypeLabel" class="text-[11px] text-[#8c8275] mt-0.5">SP98 Excellium</div>
             </div>
             <div class="text-right shrink-0">
               <div class="flex items-baseline justify-end gap-0.5">
-                <span id="autoPriceDisplay" class="mono text-xl font-bold text-[#30D158]">1.849</span>
-                <span class="text-[10px] text-zinc-500 font-bold">€</span>
+                <span id="autoPriceDisplay" class="mono text-xl font-bold text-[#52b788]">1.849</span>
+                <span class="text-[10px] text-[#8c8275] font-bold">€</span>
               </div>
             </div>
           </div>
@@ -111,29 +111,29 @@
             <div id="fuelGradeBar" class="grid grid-cols-2 gap-1.5 pt-1"></div>
           </div>
 
-          <div id="nearbyStationsBar" class="flex items-center gap-1 overflow-x-auto no-scrollbar pt-1 border-t border-zinc-900"></div>
+          <div id="nearbyStationsBar" class="flex items-center gap-1 overflow-x-auto no-scrollbar pt-1 border-t border-[#221c17]"></div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-          <div class="bg-black rounded-xl p-3 border border-zinc-900">
-            <label class="block text-[10px] font-semibold uppercase text-zinc-500">Distance</label>
+          <div class="bg-[#12100e] rounded-xl p-3 border border-[#221c17]">
+            <label class="block text-[10px] font-semibold uppercase text-[#8c8275]">Distance</label>
             <div class="flex items-baseline gap-1 mt-1">
-              <input id="kmInput" type="number" inputmode="decimal" placeholder="240" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-bold mono text-white focus:outline-none">
-              <span class="text-xs font-semibold text-zinc-600">KM</span>
+              <input id="kmInput" type="number" inputmode="decimal" placeholder="240" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-bold mono text-[#f4f1ea] focus:outline-none">
+              <span class="text-xs font-semibold text-[#8c8275]">KM</span>
             </div>
           </div>
-          <div class="bg-black rounded-xl p-3 border border-zinc-900">
-            <label class="block text-[10px] font-semibold uppercase text-zinc-500">Montant</label>
+          <div class="bg-[#12100e] rounded-xl p-3 border border-[#221c17]">
+            <label class="block text-[10px] font-semibold uppercase text-[#8c8275]">Montant</label>
             <div class="flex items-baseline gap-1 mt-1">
-              <input id="euroInput" type="number" inputmode="decimal" step="0.01" placeholder="32.00" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-bold mono text-[#30D158] focus:outline-none">
-              <span class="text-xs font-semibold text-zinc-600">€</span>
+              <input id="euroInput" type="number" inputmode="decimal" step="0.01" placeholder="32.00" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-bold mono text-[#52b788] focus:outline-none">
+              <span class="text-xs font-semibold text-[#8c8275]">€</span>
             </div>
           </div>
         </div>
 
         <div id="detectionBanner" class="hidden rounded-xl px-3 py-2 text-xs font-semibold flex items-center justify-between"></div>
 
-        <button type="button" onclick="addEntry()" class="w-full py-3.5 rounded-xl bg-[#30D158] active:opacity-80 text-black font-bold text-xs tracking-wide">
+        <button type="button" onclick="addEntry()" class="w-full py-3.5 rounded-xl bg-[#2d6a4f] hover:bg-[#40916c] active:opacity-90 text-[#f4f1ea] font-bold text-xs tracking-wide transition">
           VALIDER LE PASSAGE À LA POMPE
         </button>
       </div>
@@ -142,7 +142,7 @@
       <div id="mainDashboard" class="space-y-3.5">
 
         <!-- CARTE SIV -->
-        <div class="bg-zinc-950 rounded-2xl p-4 space-y-3 border border-zinc-900/80">
+        <div class="bg-[#181411] rounded-2xl p-4 space-y-3 border border-[#26211c]">
           <div class="flex items-center justify-between gap-3">
             <div class="inline-flex items-stretch h-9 bg-white rounded overflow-hidden border border-zinc-300 shrink-0">
               <div class="w-4 bg-[#003399] text-white flex flex-col items-center justify-between py-1">
@@ -157,62 +157,62 @@
             </div>
 
             <div class="text-right min-w-0 flex-1">
-              <div id="vehTitle" class="text-xs font-bold text-white truncate">Véhicule</div>
-              <div id="vehSpecs" class="text-[11px] text-[#30D158] mono font-medium">-- L • Norme -- L/100</div>
+              <div id="vehTitle" class="text-xs font-bold text-[#f4f1ea] truncate">Véhicule</div>
+              <div id="vehSpecs" class="text-[11px] text-[#52b788] mono font-medium">-- L • Norme -- L/100</div>
             </div>
           </div>
 
-          <div class="bg-black rounded-xl p-3 flex items-center justify-between border border-zinc-900">
+          <div class="bg-[#12100e] rounded-xl p-3 flex items-center justify-between border border-[#221c17]">
             <div>
-              <div class="text-[10px] font-semibold uppercase text-zinc-500">Réserve d'appoint</div>
-              <div id="reserveBadge" class="mt-0.5 text-xs text-zinc-300 mono font-semibold">
+              <div class="text-[10px] font-semibold uppercase text-[#8c8275]">Réserve d'appoint</div>
+              <div id="reserveBadge" class="mt-0.5 text-xs text-[#e7e2dc] mono font-semibold">
                 0.0 L / 0 km
               </div>
             </div>
-            <div id="vehicleSvgContainer" class="text-zinc-700"></div>
+            <div id="vehicleSvgContainer" class="text-[#8c8275]"></div>
           </div>
         </div>
 
-        <!-- STATS STYLE BOURSE -->
+        <!-- STATS CUIR & VERT SAPIN -->
         <div class="grid grid-cols-2 gap-2.5">
-          <div class="bg-zinc-950 rounded-2xl p-3.5 border border-zinc-900/80">
-            <div class="text-[10px] font-semibold uppercase text-zinc-500">Moyenne Réelle</div>
+          <div class="bg-[#181411] rounded-2xl p-3.5 border border-[#26211c]">
+            <div class="text-[10px] font-semibold uppercase text-[#8c8275]">Moyenne Réelle</div>
             <div class="flex items-baseline gap-1 mt-1">
-              <span id="statConso" class="text-2xl font-bold mono text-white">--</span>
-              <span class="text-xs text-[#30D158] font-bold">L/100</span>
+              <span id="statConso" class="text-2xl font-bold mono text-[#f4f1ea]">--</span>
+              <span class="text-xs text-[#52b788] font-bold">L/100</span>
             </div>
-            <div id="statHealth" class="text-[11px] text-[#30D158] font-medium mt-0.5">● État nominal</div>
+            <div id="statHealth" class="text-[11px] text-[#52b788] font-medium mt-0.5">● État nominal</div>
           </div>
-          <div class="bg-zinc-950 rounded-2xl p-3.5 border border-zinc-900/80">
-            <div class="text-[10px] font-semibold uppercase text-zinc-500">Coût / KM</div>
+          <div class="bg-[#181411] rounded-2xl p-3.5 border border-[#26211c]">
+            <div class="text-[10px] font-semibold uppercase text-[#8c8275]">Coût / KM</div>
             <div class="flex items-baseline gap-1 mt-1">
-              <span id="statCostKm" class="text-2xl font-bold mono text-white">0.000</span>
-              <span class="text-xs text-zinc-500 font-bold">€</span>
+              <span id="statCostKm" class="text-2xl font-bold mono text-[#f4f1ea]">0.000</span>
+              <span class="text-xs text-[#8c8275] font-bold">€</span>
             </div>
-            <div id="statTotalEuro" class="text-[11px] text-zinc-400 font-medium mt-0.5">Cumul : 0.00 €</div>
+            <div id="statTotalEuro" class="text-[11px] text-[#a3978b] font-medium mt-0.5">Cumul : 0.00 €</div>
           </div>
         </div>
 
-        <!-- GRAPHIQUE APPLE BOURSE PUR -->
-        <div class="bg-zinc-950 rounded-2xl p-4 space-y-2 border border-zinc-900/80">
+        <!-- GRAPHIQUE VERT SAPIN PROFOND -->
+        <div class="bg-[#181411] rounded-2xl p-4 space-y-2 border border-[#26211c]">
           <div class="flex items-center justify-between">
-            <h2 class="text-xs font-bold text-white uppercase tracking-wider">Évolution Thermique</h2>
-            <span id="chartNormBadge" class="text-[10px] mono text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded-full">Norme : -- L</span>
+            <h2 class="text-xs font-bold text-[#f4f1ea] uppercase tracking-wider">Évolution Thermique</h2>
+            <span id="chartNormBadge" class="text-[10px] mono text-[#a3978b] bg-[#12100e] border border-[#221c17] px-2 py-0.5 rounded-full">Norme : -- L</span>
           </div>
-          <div class="bg-black rounded-xl p-3 border border-zinc-900">
+          <div class="bg-[#12100e] rounded-xl p-3 border border-[#221c17]">
             <svg id="consoChart" class="w-full h-36 overflow-visible" viewBox="0 0 320 120"></svg>
           </div>
         </div>
 
-        <button type="button" onclick="window.print()" class="w-full py-3.5 px-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs tracking-wide border border-zinc-800">
+        <button type="button" onclick="window.print()" class="w-full py-3.5 px-4 rounded-xl bg-[#1c1815] hover:bg-[#26211c] text-[#f4f1ea] font-bold text-xs tracking-wide border border-[#2b2520]">
           📄 Générer le Certificat PDF A4
         </button>
 
         <!-- HISTORIQUE -->
-        <div class="bg-zinc-950 rounded-2xl p-4 space-y-2.5 border border-zinc-900/80">
+        <div class="bg-[#181411] rounded-2xl p-4 space-y-2.5 border border-[#26211c]">
           <div class="flex items-center justify-between">
-            <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Journal des Passages</h2>
-            <button type="button" onclick="clearHistory()" class="text-[11px] text-red-400 font-medium">Vider</button>
+            <h2 class="text-xs font-bold text-[#8c8275] uppercase tracking-wider">Journal des Passages</h2>
+            <button type="button" onclick="clearHistory()" class="text-[11px] text-[#d90429] font-medium">Vider</button>
           </div>
           <div id="historyList" class="space-y-2 text-xs"></div>
         </div>
@@ -221,43 +221,43 @@
   </div>
 
   <!-- MODALE VÉHICULE -->
-  <div id="vehicleModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden items-center justify-center p-4 no-print">
-    <div class="bg-zinc-950 border border-zinc-800 rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-zinc-900 pb-3">
+  <div id="vehicleModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden items-center justify-center p-4 no-print">
+    <div class="bg-[#181411] border border-[#2b2520] rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-[#26211c] pb-3">
         <div>
-          <h3 class="text-sm font-bold text-white">Nouveau Véhicule</h3>
-          <p class="text-[10px] text-[#30D158] font-medium">Détection automatique du réservoir</p>
+          <h3 class="text-sm font-bold text-[#f4f1ea]">Nouveau Véhicule</h3>
+          <p class="text-[10px] text-[#52b788] font-medium">Détection automatique du réservoir</p>
         </div>
-        <button type="button" onclick="closeVehicleModal()" class="text-zinc-500 hover:text-white text-xl font-bold px-2">&times;</button>
+        <button type="button" onclick="closeVehicleModal()" class="text-[#8c8275] hover:text-white text-xl font-bold px-2">&times;</button>
       </div>
 
       <div class="space-y-3 text-xs">
         <div class="grid grid-cols-2 gap-2">
-          <button type="button" id="catMotoBtn" onclick="setModalCategory('moto')" class="py-2.5 rounded-xl font-bold text-xs bg-[#30D158] text-black">
+          <button type="button" id="catMotoBtn" onclick="setModalCategory('moto')" class="py-2.5 rounded-xl font-bold text-xs bg-[#2d6a4f] text-[#f4f1ea]">
             🏍️ Moto
           </button>
-          <button type="button" id="catAutoBtn" onclick="setModalCategory('auto')" class="py-2.5 rounded-xl font-bold text-xs bg-zinc-900 text-zinc-400 border border-zinc-800">
+          <button type="button" id="catAutoBtn" onclick="setModalCategory('auto')" class="py-2.5 rounded-xl font-bold text-xs bg-[#12100e] text-[#8c8275] border border-[#221c17]">
             🚗 Voiture
           </button>
         </div>
 
         <div>
-          <label class="block text-zinc-400 font-semibold mb-1">Modèle (ex: MT-07, E39 520i...)</label>
-          <input id="newVehName" type="text" placeholder="Modèle exact..." oninput="autoLookupSpecs()" class="w-full bg-black border border-zinc-800 rounded-xl px-3 py-2.5 text-white font-bold focus:outline-none focus:border-[#30D158]">
+          <label class="block text-[#8c8275] font-semibold mb-1">Modèle (ex: MT-07, E39 520i...)</label>
+          <input id="newVehName" type="text" placeholder="Modèle exact..." oninput="autoLookupSpecs()" class="w-full bg-[#12100e] border border-[#221c17] rounded-xl px-3 py-2.5 text-[#f4f1ea] font-bold focus:outline-none focus:border-[#52b788]">
         </div>
 
-        <div class="bg-black border border-zinc-900 rounded-xl p-3 space-y-1">
-          <div id="specStatusText" class="text-[10px] font-bold text-[#30D158]">
+        <div class="bg-[#12100e] border border-[#221c17] rounded-xl p-3 space-y-1">
+          <div id="specStatusText" class="text-[10px] font-bold text-[#52b788]">
             ⚡ Calibrage automatique actif
           </div>
           <div class="flex items-center justify-between pt-1">
             <div>
-              <span class="text-[10px] text-zinc-500 block">Réservoir</span>
-              <span id="detectedTankLabel" class="mono text-base font-bold text-white">17.0 L</span>
+              <span class="text-[10px] text-[#8c8275] block">Réservoir</span>
+              <span id="detectedTankLabel" class="mono text-base font-bold text-[#f4f1ea]">17.0 L</span>
             </div>
             <div class="text-right">
-              <span class="text-[10px] text-zinc-500 block">Norme</span>
-              <span id="detectedNormLabel" class="mono text-base font-bold text-[#30D158]">4.5 L</span>
+              <span class="text-[10px] text-[#8c8275] block">Norme</span>
+              <span id="detectedNormLabel" class="mono text-base font-bold text-[#52b788]">4.5 L</span>
             </div>
           </div>
           <input id="newVehTank" type="hidden" value="17">
@@ -266,12 +266,12 @@
 
         <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block text-zinc-400 font-semibold mb-1">Plaque SIV</label>
-            <input id="newVehPlate" type="text" maxlength="9" placeholder="AB-123-CD" oninput="formatSIV(this)" class="w-full bg-black border border-zinc-800 rounded-xl px-3 py-2.5 text-white mono font-bold uppercase focus:outline-none">
+            <label class="block text-[#8c8275] font-semibold mb-1">Plaque SIV</label>
+            <input id="newVehPlate" type="text" maxlength="9" placeholder="AB-123-CD" oninput="formatSIV(this)" class="w-full bg-[#12100e] border border-[#221c17] rounded-xl px-3 py-2.5 text-[#f4f1ea] mono font-bold uppercase focus:outline-none">
           </div>
           <div>
-            <label class="block text-zinc-400 font-semibold mb-1">Moteur</label>
-            <select id="newVehEngineFamily" class="w-full bg-black border border-zinc-800 rounded-xl px-3 py-2.5 text-white font-bold focus:outline-none">
+            <label class="block text-[#8c8275] font-semibold mb-1">Moteur</label>
+            <select id="newVehEngineFamily" class="w-full bg-[#12100e] border border-[#221c17] rounded-xl px-3 py-2.5 text-[#f4f1ea] font-bold focus:outline-none">
               <option value="essence">Essence</option>
               <option value="diesel">Diesel</option>
             </select>
@@ -280,8 +280,8 @@
       </div>
 
       <div class="flex gap-2 pt-2">
-        <button type="button" onclick="closeVehicleModal()" class="flex-1 py-3 rounded-xl bg-zinc-900 text-zinc-400 font-semibold text-xs">Annuler</button>
-        <button type="button" onclick="saveNewVehicle()" class="flex-1 py-3 rounded-xl bg-[#30D158] text-black font-bold text-xs uppercase">Enregistrer</button>
+        <button type="button" onclick="closeVehicleModal()" class="flex-1 py-3 rounded-xl bg-[#12100e] text-[#8c8275] font-semibold text-xs border border-[#221c17]">Annuler</button>
+        <button type="button" onclick="saveNewVehicle()" class="flex-1 py-3 rounded-xl bg-[#2d6a4f] text-[#f4f1ea] font-bold text-xs uppercase">Enregistrer</button>
       </div>
     </div>
   </div>
@@ -355,16 +355,16 @@
     };
 
     try {
-      const saved = JSON.parse(localStorage.getItem('pump_index_v9'));
+      const saved = JSON.parse(localStorage.getItem('pump_index_v10'));
       if (saved && typeof saved === 'object' && saved.vehicles) {
         state = Object.assign(state, saved);
       }
     } catch (e) {
-      localStorage.removeItem('pump_index_v9');
+      localStorage.removeItem('pump_index_v10');
     }
 
     function saveState() {
-      try { localStorage.setItem('pump_index_v9', JSON.stringify(state)); } catch (e) {}
+      try { localStorage.setItem('pump_index_v10', JSON.stringify(state)); } catch (e) {}
       render();
     }
 
@@ -375,8 +375,8 @@
 
     function setModalCategory(cat) {
       modalCat = cat;
-      document.getElementById('catMotoBtn').className = cat === 'moto' ? "py-2.5 rounded-xl font-bold text-xs bg-[#30D158] text-black" : "py-2.5 rounded-xl font-bold text-xs bg-zinc-900 text-zinc-400 border border-zinc-800";
-      document.getElementById('catAutoBtn').className = cat === 'auto' ? "py-2.5 rounded-xl font-bold text-xs bg-[#30D158] text-black" : "py-2.5 rounded-xl font-bold text-xs bg-zinc-900 text-zinc-400 border border-zinc-800";
+      document.getElementById('catMotoBtn').className = cat === 'moto' ? "py-2.5 rounded-xl font-bold text-xs bg-[#2d6a4f] text-[#f4f1ea]" : "py-2.5 rounded-xl font-bold text-xs bg-[#12100e] text-[#8c8275] border border-[#221c17]";
+      document.getElementById('catAutoBtn').className = cat === 'auto' ? "py-2.5 rounded-xl font-bold text-xs bg-[#2d6a4f] text-[#f4f1ea]" : "py-2.5 rounded-xl font-bold text-xs bg-[#12100e] text-[#8c8275] border border-[#221c17]";
       if (cat === 'moto') document.getElementById('newVehEngineFamily').value = 'essence';
       autoLookupSpecs();
     }
@@ -397,8 +397,8 @@
           tankInput.value = item.tank;
           normInput.value = item.norm;
           modalCat = item.cat;
-          document.getElementById('catMotoBtn').className = modalCat === 'moto' ? "py-2.5 rounded-xl font-bold text-xs bg-[#30D158] text-black" : "py-2.5 rounded-xl font-bold text-xs bg-zinc-900 text-zinc-400 border border-zinc-800";
-          document.getElementById('catAutoBtn').className = modalCat === 'auto' ? "py-2.5 rounded-xl font-bold text-xs bg-[#30D158] text-black" : "py-2.5 rounded-xl font-bold text-xs bg-zinc-900 text-zinc-400 border border-zinc-800";
+          document.getElementById('catMotoBtn').className = modalCat === 'moto' ? "py-2.5 rounded-xl font-bold text-xs bg-[#2d6a4f] text-[#f4f1ea]" : "py-2.5 rounded-xl font-bold text-xs bg-[#12100e] text-[#8c8275] border border-[#221c17]";
+          document.getElementById('catAutoBtn').className = modalCat === 'auto' ? "py-2.5 rounded-xl font-bold text-xs bg-[#2d6a4f] text-[#f4f1ea]" : "py-2.5 rounded-xl font-bold text-xs bg-[#12100e] text-[#8c8275] border border-[#221c17]";
           document.getElementById('newVehEngineFamily').value = item.engine;
           updateSpecLabels();
           return;
@@ -571,7 +571,7 @@
         const totalL = liters + (v.pendingLiters || 0);
         const totalKm = km + (v.pendingKm || 0);
         const conso = ((totalL / totalKm) * 100).toFixed(2);
-        banner.className = "rounded-xl px-3 py-2 text-xs font-semibold flex items-center justify-between bg-[#30D158]/10 border border-[#30D158]/30 text-[#30D158]";
+        banner.className = "rounded-xl px-3 py-2 text-xs font-semibold flex items-center justify-between bg-[#2d6a4f]/20 border border-[#2d6a4f]/40 text-[#52b788]";
         banner.innerHTML = `<span>✅ Plein complet (${liters.toFixed(1)} L)</span><span>${conso} L/100</span>`;
       }
     }
@@ -624,13 +624,13 @@
       btn.innerText = dash.classList.contains('hidden') ? '📊 Complet' : '⚡ Widget';
     }
 
-    // GRAPHIQUE PUR STYLE APPLE BOURSE (GRADIENT VERT FIN + POINTS LISSÉS)
+    // GRAPHIQUE VERT SAPIN & DÉGRADÉ DOUX
     function renderChart(norm, fullEntries) {
       const svg = document.getElementById('consoChart');
       if (!svg) return;
       const points = fullEntries.slice(0, 7).reverse();
       if (points.length === 0) {
-        svg.innerHTML = `<text x="160" y="65" text-anchor="middle" fill="#71717a" font-size="11" font-weight="500">Aucune donnée graphique</text>`;
+        svg.innerHTML = `<text x="160" y="65" text-anchor="middle" fill="#8c8275" font-size="11" font-weight="500">Aucune donnée graphique</text>`;
         return;
       }
       const values = points.map(p => p.conso);
@@ -646,18 +646,18 @@
 
       svg.innerHTML = `
         <defs>
-          <linearGradient id="appleStockGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#30D158" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="#30D158" stop-opacity="0.0"/>
+          <linearGradient id="forestStockGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#52b788" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#2d6a4f" stop-opacity="0.0"/>
           </linearGradient>
         </defs>
-        <line x1="${padX}" y1="${normY}" x2="${w - padX}" y2="${normY}" stroke="#27272a" stroke-dasharray="3 3" stroke-width="1"/>
-        <text x="${w - padX}" y="${normY - 4}" text-anchor="end" fill="#71717a" font-size="9" font-family="monospace">Norme ${norm.toFixed(1)}L</text>
-        ${coords.length > 1 ? `<path d="${areaD}" fill="url(#appleStockGrad)"/>` : ''}
-        <path d="${pathD}" fill="none" stroke="#30D158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="${padX}" y1="${normY}" x2="${w - padX}" y2="${normY}" stroke="#2b2520" stroke-dasharray="3 3" stroke-width="1"/>
+        <text x="${w - padX}" y="${normY - 4}" text-anchor="end" fill="#8c8275" font-size="9" font-family="monospace">Norme ${norm.toFixed(1)}L</text>
+        ${coords.length > 1 ? `<path d="${areaD}" fill="url(#forestStockGrad)"/>` : ''}
+        <path d="${pathD}" fill="none" stroke="#52b788" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
         ${coords.map(c => `
-          <circle cx="${c.x}" cy="${c.y}" r="3.5" fill="#000000" stroke="#30D158" stroke-width="2"/>
-          <text x="${c.x}" y="${c.y - 8}" text-anchor="middle" fill="#f5f5f7" font-size="9" font-weight="700" font-family="monospace">${c.val.toFixed(1)}</text>
+          <circle cx="${c.x}" cy="${c.y}" r="3.5" fill="#12100e" stroke="#52b788" stroke-width="2"/>
+          <text x="${c.x}" y="${c.y - 8}" text-anchor="middle" fill="#f4f1ea" font-size="9" font-weight="700" font-family="monospace">${c.val.toFixed(1)}</text>
         `).join('')}
       `;
     }
@@ -685,9 +685,9 @@
       const v = state.vehicles[state.activeId];
 
       pills.innerHTML = vehList.map(veh => `
-        <div onclick="selectVehicle('${veh.id}')" class="shrink-0 pl-3 pr-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 cursor-pointer border transition ${veh.id === state.activeId ? 'bg-zinc-800 text-white border-zinc-700' : 'bg-zinc-950 text-zinc-500 border-zinc-900'}">
+        <div onclick="selectVehicle('${veh.id}')" class="shrink-0 pl-3 pr-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 cursor-pointer border transition ${veh.id === state.activeId ? 'bg-[#221c17] text-[#f4f1ea] border-[#382e26]' : 'bg-[#151210] text-[#8c8275] border-[#1e1915]'}">
           <span>${veh.category === 'moto' ? '🏍️' : '🚗'} ${veh.short}</span>
-          <button type="button" onclick="deleteVehicle('${veh.id}', event)" class="w-4 h-4 rounded-full flex items-center justify-center text-[10px] text-zinc-500 hover:text-white">✕</button>
+          <button type="button" onclick="deleteVehicle('${veh.id}', event)" class="w-4 h-4 rounded-full flex items-center justify-center text-[10px] text-[#8c8275] hover:text-[#f4f1ea]">✕</button>
         </div>
       `).join('');
 
@@ -699,7 +699,7 @@
       document.getElementById('fuelGradeBar').innerHTML = grades.map(g => {
         const isSel = g.id === v.selectedGradeId;
         return `
-          <button type="button" onclick="selectFuelGrade('${g.id}')" class="py-1.5 px-2 rounded-lg text-[11px] font-semibold border text-left truncate transition ${isSel ? 'bg-[#30D158]/10 border-[#30D158]/50 text-[#30D158]' : 'bg-black border-zinc-900 text-zinc-500'}">
+          <button type="button" onclick="selectFuelGrade('${g.id}')" class="py-1.5 px-2 rounded-lg text-[11px] font-semibold border text-left truncate transition ${isSel ? 'bg-[#2d6a4f]/20 border-[#52b788]/60 text-[#74c69d]' : 'bg-[#12100e] border-[#221c17] text-[#8c8275]'}">
             ${g.label}
           </button>
         `;
@@ -712,7 +712,7 @@
       const nearBar = document.getElementById('nearbyStationsBar');
       if (state.nearbyStations && state.nearbyStations.length > 0) {
         nearBar.innerHTML = state.nearbyStations.map((st, idx) => `
-          <button type="button" onclick="pickNearbyStation(${idx})" class="shrink-0 px-2 py-0.5 rounded text-[10px] font-medium border ${st.name === state.currentStation ? 'bg-zinc-900 text-[#30D158] border-zinc-800' : 'bg-black text-zinc-600 border-zinc-900'}">
+          <button type="button" onclick="pickNearbyStation(${idx})" class="shrink-0 px-2 py-0.5 rounded text-[10px] font-medium border ${st.name === state.currentStation ? 'bg-[#1c1815] text-[#52b788] border-[#2b2520]' : 'bg-[#12100e] text-[#8c8275] border-[#221c17]'}">
             ${st.dist.toFixed(1)}km • ${st.name}
           </button>
         `).join('');
@@ -739,17 +739,17 @@
       const list = document.getElementById('historyList');
       const printBody = document.getElementById('printTableBody');
       if (!entries.length) {
-        list.innerHTML = `<div class="text-zinc-600 py-3 text-center text-xs">Aucun passage enregistré.</div>`;
+        list.innerHTML = `<div class="text-[#8c8275] py-3 text-center text-xs">Aucun passage enregistré.</div>`;
         printBody.innerHTML = '';
       } else {
         list.innerHTML = entries.map(e => `
-          <div class="flex items-center justify-between bg-black border border-zinc-900 rounded-xl px-3 py-2">
+          <div class="flex items-center justify-between bg-[#12100e] border border-[#221c17] rounded-xl px-3 py-2">
             <div>
-              <div class="font-semibold text-white">${e.date} • ${e.station}</div>
-              <div class="text-[10px] text-[#30D158] font-medium">${e.fuelLabel || ''}</div>
-              <div class="text-[10px] text-zinc-500 mono">${e.km} km • ${e.euro.toFixed(2)} € (${e.liters.toFixed(1)} L)</div>
+              <div class="font-semibold text-[#f4f1ea]">${e.date} • ${e.station}</div>
+              <div class="text-[10px] text-[#52b788] font-medium">${e.fuelLabel || ''}</div>
+              <div class="text-[10px] text-[#8c8275] mono">${e.km} km • ${e.euro.toFixed(2)} € (${e.liters.toFixed(1)} L)</div>
             </div>
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold mono ${e.conso ? 'bg-[#30D158]/10 text-[#30D158]' : 'bg-amber-500/10 text-amber-400'}">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold mono ${e.conso ? 'bg-[#2d6a4f]/20 text-[#52b788]' : 'bg-amber-500/10 text-amber-400'}">
               ${e.conso ? e.conso.toFixed(2) + ' L' : 'APPOINT'}
             </span>
           </div>
