@@ -3,29 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>PUMP // INDEX</title>
+  <title>PUMP // INDEX v8</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="PUMP // INDEX">
   <meta name="theme-color" content="#09090b">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%2309090b'/><path d='M35 130 L145 130 M45 110 L78 75 L108 92 L140 50' stroke='%2310b981' stroke-width='12' stroke-linecap='round' stroke-linejoin='round' fill='none'/><circle cx='140' cy='50' r='9' fill='%2310b981'/></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap');
-    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: #09090b;
       color: #f4f4f5;
+      -webkit-tap-highlight-color: transparent;
       padding-top: env(safe-area-inset-top);
       touch-action: manipulation;
     }
-    .mono { font-family: 'JetBrains Mono', monospace; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-    button { cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+    button { cursor: pointer; touch-action: manipulation; }
     @media print {
       body { background: #ffffff !important; color: #000000 !important; padding: 0 !important; }
       .no-print { display: none !important; }
@@ -33,142 +29,137 @@
     }
   </style>
 </head>
-<body class="min-h-screen pb-24 selection:bg-emerald-500 selection:text-black">
+<body class="min-h-screen pb-24">
 
-  <!-- APPLICATION MOBILE -->
   <div id="app" class="max-w-md mx-auto px-4 pt-4 space-y-4 no-print">
 
-    <!-- HEADER v8 -->
-    <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3.5">
+    <!-- HEADER v8 AVEC BOUTON RESET D'URGENCE -->
+    <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
       <div>
         <div class="flex items-center gap-2">
-          <span id="gpsDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
-          <h1 class="text-base font-black tracking-tight">PUMP <span class="text-emerald-500">//</span> INDEX <span class="text-[10px] font-mono text-emerald-400">v8</span></h1>
+          <span id="gpsDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          <h1 class="text-base font-black tracking-tight">PUMP <span class="text-emerald-500">//</span> INDEX <span class="text-xs font-mono text-emerald-400">v8</span></h1>
         </div>
-        <p class="text-[11px] text-zinc-400 font-medium">Auto-Specs Constructeur & Prix Gouv.fr</p>
+        <p class="text-[11px] text-zinc-400">Auto-Specs Constructeur & Prix Gouv.fr</p>
       </div>
       <div class="flex items-center gap-1.5">
-        <button type="button" onclick="safeReloadApp()" class="px-2.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-bold text-zinc-300 active:scale-95">
-          🔄
+        <button type="button" onclick="hardResetApp()" class="px-2.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-700 text-[11px] font-bold text-zinc-300 active:bg-zinc-800">
+          🔄 Reset
         </button>
-        <button type="button" onclick="toggleWidgetMode()" id="widgetBtn" class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-700/80 text-xs font-bold text-emerald-400 active:scale-95 transition">
+        <button type="button" onclick="toggleWidgetMode()" id="widgetBtn" class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-emerald-500/40 text-xs font-bold text-emerald-400 active:bg-zinc-800">
           ⚡ Widget
         </button>
       </div>
     </div>
 
-    <!-- BOUTON D'AUTORISATION GPS iOS (100% MANUEL AU TOUCHER POUR ÉVITER LE FREEZE SAFARI/PWA) -->
-    <button type="button" id="iosGpsPromptBtn" onclick="triggerUserGpsScan()" class="w-full py-3 px-4 rounded-2xl bg-emerald-500/15 border-2 border-emerald-500/60 text-emerald-300 font-extrabold text-xs flex items-center justify-between shadow-lg active:scale-[0.98] transition">
-      <span class="flex items-center gap-2 text-left">
-        <span>📍</span>
-        <span id="gpsBtnLabel"> Scanner la station GPS & les tarifs en direct</span>
-      </span>
-      <span class="px-2.5 py-1 rounded-lg bg-emerald-500 text-black font-black text-[10px] uppercase shrink-0">Activer</span>
+    <!-- BOUTON GPS iOS -->
+    <button type="button" id="iosGpsPromptBtn" onclick="requestIOSLocation()" class="w-full py-3 px-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/50 text-emerald-300 font-bold text-xs flex items-center justify-between active:bg-emerald-500/25">
+      <span>📍 Activer le GPS iOS & Tarif Station Auto</span>
+      <span class="px-2 py-0.5 rounded bg-emerald-500 text-black font-black text-[10px] uppercase">Activer</span>
     </button>
 
     <!-- BARRE GARAGE -->
     <div class="space-y-2">
       <div class="flex items-center justify-between">
         <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Mon Garage Personnel</span>
-        <button type="button" onclick="openVehicleModal()" class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-lg active:scale-95 transition">
+        <button type="button" onclick="openVehicleModal()" class="text-xs font-bold text-black bg-emerald-500 px-3 py-1.5 rounded-xl shadow active:scale-95">
           + Ajouter Auto / Moto
         </button>
       </div>
       <div id="vehiclePills" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1"></div>
     </div>
 
-    <!-- ÉCRAN GARAGE VIDE -->
-    <div id="emptyGarageCard" class="hidden bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 text-center space-y-3">
+    <!-- ÉCRAN SI GARAGE VIDE -->
+    <div id="emptyGarageCard" class="hidden bg-zinc-900 border border-zinc-800 rounded-2xl p-6 text-center space-y-4">
       <div class="text-3xl">🏍️ 🚗</div>
-      <h2 class="text-sm font-black uppercase tracking-wider text-white">Ton garage est vierge</h2>
-      <p class="text-xs text-zinc-400 leading-relaxed">
-        Ajoute ta moto ou ta voiture : tape simplement la marque et le modèle, l'application trouve toute seule la capacité exacte du réservoir en litres et la consommation constructeur.
+      <h2 class="text-sm font-black uppercase text-white">Ton garage est vide</h2>
+      <p class="text-xs text-zinc-400">
+        Appuie ci-dessous pour ajouter ta moto ou ta voiture. Tape juste le modèle : la capacité exacte du réservoir en litres est trouvée automatiquement.
       </p>
-      <button type="button" onclick="openVehicleModal()" class="w-full py-3.5 rounded-xl bg-emerald-500 text-black font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/10 active:scale-95">
+      <button type="button" onclick="openVehicleModal()" class="w-full py-3.5 rounded-xl bg-emerald-500 text-black font-black text-xs uppercase tracking-wider">
         + Configurer mon 1er Véhicule
       </button>
     </div>
 
-    <!-- CONTENU ACTIF -->
+    <!-- CONTENU PRINCIPAL (SI AU MOINS 1 VÉHICULE) -->
     <div id="activeVehicleContainer" class="space-y-4">
 
       <!-- WIDGET ÉCLAIR -->
-      <div id="quickWidget" class="bg-gradient-to-b from-zinc-900/95 to-zinc-950 border border-zinc-800 rounded-2xl p-4 shadow-2xl space-y-3">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
         <div class="flex items-center justify-between">
-          <span id="gpsStatusBadge" class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-400 flex items-center gap-1.5">
-            🟢 Tarif Station Prêt
+          <span id="gpsStatusBadge" class="text-[10px] uppercase font-bold text-emerald-400">
+            🟢 Tarif Station Gouv.fr Actif
           </span>
-          <button type="button" onclick="triggerUserGpsScan()" class="text-[11px] text-emerald-400 font-bold underline active:text-white">
-            Relocaliser GPS
+          <button type="button" onclick="requestIOSLocation()" class="text-[11px] text-zinc-400 underline">
+            Relocaliser
           </button>
         </div>
 
-        <!-- STATION & SÉLECTEUR DE PISTOLET EN 1 TAP -->
-        <div class="bg-zinc-950 border border-zinc-800/90 rounded-xl p-3 space-y-2.5">
+        <!-- STATION + CHOIX DU CARBURANT EN 1 TAP -->
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3 space-y-3">
           <div class="flex items-center justify-between">
             <div class="pr-2 min-w-0 flex-1">
-              <div id="stationName" class="text-xs font-extrabold text-white truncate">Canteleu — RN138 Route de Dieppe</div>
-              <div id="fuelTypeLabel" class="text-[11px] text-emerald-400/90 font-semibold mt-0.5">Sélectionne ton pistolet ci-dessous</div>
+              <div id="stationName" class="text-xs font-bold text-white truncate">Canteleu — RN138 Route de Dieppe</div>
+              <div id="fuelTypeLabel" class="text-[11px] text-emerald-400 font-semibold mt-0.5">SP98 Excellium</div>
             </div>
-            <!-- PRIX AU LITRE AUTOMATIQUE -->
             <div class="text-right shrink-0 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-1.5">
               <div class="flex items-baseline justify-end gap-1">
-                <span id="autoPriceDisplay" class="mono text-lg font-black text-emerald-400">1.839</span>
+                <span id="autoPriceDisplay" class="mono text-lg font-black text-emerald-400">1.849</span>
                 <span class="text-[10px] text-emerald-300 font-bold">€/L</span>
               </div>
-              <div class="text-[9px] uppercase tracking-wider text-zinc-400 font-bold">Auto Gouv.fr</div>
+              <div class="text-[9px] uppercase text-zinc-400 font-bold">Auto Gouv.fr</div>
             </div>
           </div>
 
-          <!-- BOUTONS DE CHANGEMENT RAPIDE D'ESSENCE / GAZOLE EXCELLIUM À LA POMPE -->
+          <!-- BOUTONS DE CHANGEMENT RAPIDE D'ESSENCE (95/98/E10) OU GAZOLE (STANDARD/EXCELLIUM) -->
           <div>
-            <div class="text-[9px] uppercase tracking-wider text-zinc-500 font-bold mb-1.5">Pistolet choisi pour ce plein :</div>
+            <div class="text-[10px] uppercase text-zinc-400 font-bold mb-1.5">Carburant choisi à la pompe :</div>
             <div id="fuelGradeBar" class="grid grid-cols-2 gap-1.5"></div>
           </div>
 
-          <!-- PASTILLES DES STATIONS PROCHES -->
+          <!-- STATIONS PROCHES -->
           <div id="nearbyStationsBar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-2 border-t border-zinc-900"></div>
         </div>
 
-        <!-- LES 2 SEULS CHAMPS À SAISIR : KM + € -->
+        <!-- SAISIE KM + € -->
         <div class="grid grid-cols-2 gap-2.5">
-          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3 focus-within:border-emerald-500/60 transition">
-            <label class="block text-[10px] uppercase tracking-wider text-zinc-400 font-bold">Distance parcourue</label>
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3">
+            <label class="block text-[10px] uppercase text-zinc-400 font-bold">Distance parcourue</label>
             <div class="flex items-baseline gap-1 mt-1">
               <input id="kmInput" type="number" inputmode="decimal" placeholder="240" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-black mono text-white focus:outline-none">
-              <span class="text-xs font-extrabold text-zinc-500">KM</span>
+              <span class="text-xs font-bold text-zinc-500">KM</span>
             </div>
           </div>
-          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3 focus-within:border-emerald-500/60 transition">
-            <label class="block text-[10px] uppercase tracking-wider text-zinc-400 font-bold">Montant payé</label>
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3">
+            <label class="block text-[10px] uppercase text-zinc-400 font-bold">Montant payé</label>
             <div class="flex items-baseline gap-1 mt-1">
               <input id="euroInput" type="number" inputmode="decimal" step="0.01" placeholder="32.00" oninput="previewCalculation()" class="w-full bg-transparent text-2xl font-black mono text-emerald-400 focus:outline-none">
-              <span class="text-xs font-extrabold text-zinc-500">€</span>
+              <span class="text-xs font-bold text-zinc-500">€</span>
             </div>
           </div>
         </div>
 
         <div id="detectionBanner" class="hidden rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between"></div>
 
-        <button type="button" onclick="addEntry()" class="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.99] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/10">
+        <button type="button" onclick="addEntry()" class="w-full py-3.5 rounded-xl bg-emerald-500 active:bg-emerald-400 text-black font-black text-xs uppercase tracking-wider shadow-lg">
           Valider le passage à la pompe
         </button>
       </div>
 
-      <!-- TABLEAU DE BORD COMPLET -->
+      <!-- TABLEAU DE BORD -->
       <div id="mainDashboard" class="space-y-4">
 
-        <!-- CARTE SIV + SILHOUETTE AUTO / MOTO -->
-        <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 space-y-3.5">
+        <!-- CARTE SIV -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between gap-3">
-            <div class="inline-flex items-stretch h-10 bg-white rounded-md overflow-hidden border-2 border-zinc-300 shadow-md shrink-0">
-              <div class="w-5 bg-[#003399] text-white flex flex-col items-center justify-between py-1 select-none">
+            <div class="inline-flex items-stretch h-10 bg-white rounded-md overflow-hidden border-2 border-zinc-300 shrink-0">
+              <div class="w-5 bg-[#003399] text-white flex flex-col items-center justify-between py-1">
                 <span class="text-[7px] leading-none text-yellow-300">★</span>
                 <span class="text-[9px] font-black leading-none">F</span>
               </div>
               <input id="sivInput" type="text" maxlength="9" value="AA-000-AA" oninput="formatSIV(this)" class="w-32 px-2 text-center mono font-black text-base tracking-widest bg-white text-black uppercase focus:outline-none">
-              <div class="w-5 bg-[#003399] text-white flex flex-col items-center justify-between py-1 select-none">
-                <span class="text-[7px] font-bold leading-none opacity-80">76</span>
+              <div class="w-5 bg-[#003399] text-white flex flex-col items-center justify-between py-1">
+                <span class="text-[7px] font-bold leading-none">76</span>
                 <span class="text-[8px] font-black leading-none">F</span>
               </div>
             </div>
@@ -179,29 +170,29 @@
             </div>
           </div>
 
-          <div class="bg-zinc-950 border border-zinc-800/80 rounded-xl p-3 flex items-center justify-between">
-            <div class="space-y-1">
-              <div class="text-[10px] uppercase tracking-wider text-zinc-400 font-bold">Réservoir & Réserve Appoint</div>
-              <div id="reserveBadge" class="inline-block px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700/80 text-[11px] text-zinc-300 mono font-semibold">
-                Réserve appoint : 0.0 L / 0 km
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3 flex items-center justify-between">
+            <div>
+              <div class="text-[10px] uppercase text-zinc-400 font-bold">Réserve Appoint en attente</div>
+              <div id="reserveBadge" class="mt-1 inline-block px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] text-zinc-300 mono font-semibold">
+                0.0 L / 0 km
               </div>
             </div>
             <div id="vehicleSvgContainer" class="shrink-0"></div>
           </div>
         </div>
 
-        <!-- 2 CARTES INDICATEURS CLÉS -->
+        <!-- STATS -->
         <div class="grid grid-cols-2 gap-3">
-          <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3.5">
-            <div class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Conso Moyenne</div>
+          <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-3.5">
+            <div class="text-[10px] text-zinc-400 font-bold uppercase">Conso Moyenne</div>
             <div class="flex items-baseline gap-1.5 mt-1">
               <span id="statConso" class="text-2xl font-black mono text-white">--</span>
               <span class="text-xs text-emerald-400 font-extrabold">L/100</span>
             </div>
-            <div id="statHealth" class="text-[11px] text-emerald-400 font-semibold mt-1">● En attente de plein</div>
+            <div id="statHealth" class="text-[11px] text-emerald-400 font-semibold mt-1">● Prêt</div>
           </div>
-          <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3.5">
-            <div class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Coût Kilométrique</div>
+          <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-3.5">
+            <div class="text-[10px] text-zinc-400 font-bold uppercase">Coût Kilométrique</div>
             <div class="flex items-baseline gap-1.5 mt-1">
               <span id="statCostKm" class="text-2xl font-black mono text-white">0.000</span>
               <span class="text-xs text-zinc-400 font-extrabold">€/km</span>
@@ -210,31 +201,25 @@
           </div>
         </div>
 
-        <!-- GRAPHIQUE APPLE BOURSE -->
-        <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 space-y-2.5">
+        <!-- COURBE -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-2.5">
           <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-xs font-extrabold uppercase tracking-wider text-white">Courbe de Stabilité Thermique</h2>
-              <p class="text-[11px] text-zinc-400">Évolution L/100 km face à la norme constructeur</p>
-            </div>
-            <span id="chartNormBadge" class="text-[10px] mono font-bold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">
-              Norme : -- L
-            </span>
+            <h2 class="text-xs font-extrabold uppercase text-white">Courbe de Consommation</h2>
+            <span id="chartNormBadge" class="text-[10px] mono font-bold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">Norme : -- L</span>
           </div>
-          <div class="bg-zinc-950 border border-zinc-800/80 rounded-xl p-3">
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3">
             <svg id="consoChart" class="w-full h-36 overflow-visible" viewBox="0 0 320 120"></svg>
           </div>
         </div>
 
-        <!-- BOUTON CERTIFICAT PDF -->
-        <button type="button" onclick="window.print()" class="w-full py-3.5 px-4 rounded-xl bg-white text-black font-black text-xs uppercase tracking-wide active:scale-95 transition">
+        <button type="button" onclick="window.print()" class="w-full py-3.5 px-4 rounded-xl bg-white text-black font-black text-xs uppercase tracking-wide">
           📄 Générer le Certificat PDF A4 de Vente
         </button>
 
-        <!-- JOURNAL DES PASSAGES -->
-        <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 space-y-3">
+        <!-- HISTORIQUE -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between">
-            <h2 class="text-xs font-extrabold uppercase tracking-wider text-zinc-400">Journal Certifié du Véhicule</h2>
+            <h2 class="text-xs font-extrabold uppercase text-zinc-400">Journal Certifié</h2>
             <button type="button" onclick="clearHistory()" class="text-[11px] text-red-400 font-semibold">Vider l'historique</button>
           </div>
           <div id="historyList" class="space-y-2 text-xs"></div>
@@ -243,67 +228,65 @@
     </div>
   </div>
 
-  <!-- MODALE INTELLIGENTE : DÉTECTION AUTOMATIQUE DU RÉSERVOIR EN LIGNE -->
-  <div id="vehicleModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden items-center justify-center p-4 no-print">
+  <!-- FENÊTRE D'AJOUT DE VÉHICULE (SANS SAISIE DU RÉSERVOIR) -->
+  <div id="vehicleModal" class="fixed inset-0 bg-black/85 z-50 hidden items-center justify-center p-4 no-print">
     <div class="bg-zinc-900 border border-zinc-700 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
         <div>
-          <h3 class="text-sm font-black uppercase tracking-wider text-white">Nouveau Véhicule (Auto / Moto)</h3>
-          <p class="text-[10px] text-emerald-400 font-semibold">Recherche automatique du réservoir en Litres</p>
+          <h3 class="text-sm font-black uppercase text-white">Ajouter Moto / Voiture</h3>
+          <p class="text-[10px] text-emerald-400 font-semibold">Réservoir en Litres détecté automatiquement</p>
         </div>
-        <button type="button" onclick="closeVehicleModal()" class="text-zinc-400 hover:text-white text-xl font-bold leading-none px-2">&times;</button>
+        <button type="button" onclick="closeVehicleModal()" class="text-zinc-400 text-xl font-bold px-2">&times;</button>
       </div>
 
       <div class="space-y-3 text-xs">
         <div class="grid grid-cols-2 gap-2">
-          <button type="button" id="catMotoBtn" onclick="setModalCategory('moto')" class="py-2 rounded-xl border font-bold text-xs transition bg-emerald-500 text-black border-emerald-400">
+          <button type="button" id="catMotoBtn" onclick="setModalCategory('moto')" class="py-2.5 rounded-xl border font-bold text-xs bg-emerald-500 text-black border-emerald-400">
             🏍️ Moto
           </button>
-          <button type="button" id="catAutoBtn" onclick="setModalCategory('auto')" class="py-2 rounded-xl border font-bold text-xs transition bg-zinc-950 text-zinc-400 border-zinc-800">
+          <button type="button" id="catAutoBtn" onclick="setModalCategory('auto')" class="py-2.5 rounded-xl border font-bold text-xs bg-zinc-950 text-zinc-400 border-zinc-800">
             🚗 Voiture
           </button>
         </div>
 
         <div>
-          <label class="block text-zinc-300 font-bold mb-1">Marque & Modèle exact</label>
+          <label class="block text-zinc-300 font-bold mb-1">Marque & Modèle (ex: BMW E39 520i, MT-07, Z900...)</label>
           <div class="flex gap-1.5">
-            <input id="newVehName" type="text" placeholder="ex: BMW R1250GS, MT-07, BMW E39 520i..." oninput="autoLookupSpecs()" class="flex-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-white font-bold focus:outline-none focus:border-emerald-500">
-            <button type="button" onclick="searchOnlineSpecs(false)" class="px-3 rounded-xl bg-zinc-800 border border-zinc-700 text-emerald-400 font-extrabold text-[11px] shrink-0">
+            <input id="newVehName" type="text" placeholder="Tape ton modèle ici..." oninput="autoLookupSpecs()" class="flex-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2.5 text-white font-bold focus:outline-none focus:border-emerald-500">
+            <button type="button" onclick="searchOnlineSpecs(false)" class="px-3 rounded-xl bg-zinc-800 border border-zinc-700 text-emerald-400 font-bold text-[11px]">
               🔍 Web
             </button>
           </div>
         </div>
 
-        <div id="autoSpecResultBox" class="bg-zinc-950 border border-emerald-500/40 rounded-xl p-3 space-y-1.5">
+        <!-- RÉSERVOIR TROUVÉ AUTOMATIQUEMENT -->
+        <div class="bg-zinc-950 border border-emerald-500/40 rounded-xl p-3 space-y-1">
           <div class="flex items-center justify-between">
-            <span id="specStatusText" class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-400">
-              ⚡ Fiche Constructeur Détectée
+            <span id="specStatusText" class="text-[10px] uppercase font-extrabold text-emerald-400">
+              ⚡ Fiche Constructeur Automatique
             </span>
-            <button type="button" onclick="toggleManualSpecEdit()" class="text-[10px] text-zinc-400 underline">Ajuster</button>
           </div>
           <div class="flex items-center justify-between pt-1">
             <div>
-              <span class="text-[10px] text-zinc-400 block">Capacité Réservoir</span>
+              <span class="text-[10px] text-zinc-400 block">Réservoir détecté</span>
               <span id="detectedTankLabel" class="mono text-base font-black text-white">17.0 Litres</span>
             </div>
             <div class="text-right">
-              <span class="text-[10px] text-zinc-400 block">Conso Norme</span>
+              <span class="text-[10px] text-zinc-400 block">Norme Conso</span>
               <span id="detectedNormLabel" class="mono text-base font-black text-emerald-400">4.5 L/100</span>
             </div>
           </div>
-          <div id="manualSpecInputs" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-zinc-800">
-            <input id="newVehTank" type="number" step="0.5" value="17" oninput="syncManualSpecLabels()" class="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-white mono font-bold text-xs">
-            <input id="newVehNorm" type="number" step="0.1" value="4.5" oninput="syncManualSpecLabels()" class="bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1 text-white mono font-bold text-xs">
-          </div>
+          <input id="newVehTank" type="hidden" value="17">
+          <input id="newVehNorm" type="hidden" value="4.5">
         </div>
 
         <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block text-zinc-400 font-bold mb-1">Immatriculation SIV</label>
-            <input id="newVehPlate" type="text" maxlength="9" placeholder="AB-123-CD" oninput="formatSIV(this)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-white mono font-bold uppercase focus:outline-none focus:border-emerald-500">
+            <label class="block text-zinc-400 font-bold mb-1">Plaque SIV</label>
+            <input id="newVehPlate" type="text" maxlength="9" placeholder="AB-123-CD" oninput="formatSIV(this)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-white mono font-bold uppercase focus:outline-none">
           </div>
           <div>
-            <label class="block text-zinc-400 font-bold mb-1">Famille Moteur</label>
+            <label class="block text-zinc-400 font-bold mb-1">Motorisation</label>
             <select id="newVehEngineFamily" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-white font-bold focus:outline-none">
               <option value="essence">Essence (95/98/E10)</option>
               <option value="diesel">Diesel (Gazole/Excellium)</option>
@@ -313,32 +296,32 @@
       </div>
 
       <div class="flex gap-2 pt-2">
-        <button type="button" onclick="closeVehicleModal()" class="flex-1 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 font-bold text-xs">Annuler</button>
-        <button type="button" onclick="saveNewVehicle()" class="flex-1 py-2.5 rounded-xl bg-emerald-500 text-black font-black text-xs uppercase">Ajouter au Garage</button>
+        <button type="button" onclick="closeVehicleModal()" class="flex-1 py-3 rounded-xl bg-zinc-800 text-zinc-300 font-bold text-xs">Annuler</button>
+        <button type="button" onclick="saveNewVehicle()" class="flex-1 py-3 rounded-xl bg-emerald-500 text-black font-black text-xs uppercase">Enregistrer</button>
       </div>
     </div>
   </div>
 
-  <!-- CERTIFICAT OFFICIEL A4 POUR IMPRESSION / PDF -->
+  <!-- CERTIFICAT IMPRESSION A4 -->
   <div class="print-only hidden p-8 max-w-4xl mx-auto text-black bg-white">
     <div class="flex justify-between items-start border-b-2 border-black pb-4">
       <div>
-        <h1 class="text-2xl font-black tracking-tight">CERTIFICAT DE TRAÇABILITÉ ÉNERGÉTIQUE & KILOMÉTRIQUE</h1>
-        <p class="text-xs text-gray-600 mt-1">Dossier Officiel PUMP // INDEX • Preuve de cohérence compteur & qualité carburant</p>
+        <h1 class="text-2xl font-black">CERTIFICAT DE TRAÇABILITÉ ÉNERGÉTIQUE & KILOMÉTRIQUE</h1>
+        <p class="text-xs text-gray-600 mt-1">Dossier Officiel PUMP // INDEX</p>
       </div>
       <div id="printSIV" class="border-2 border-black px-3 py-1 font-mono font-bold text-lg">AA-000-AA</div>
     </div>
     <div class="grid grid-cols-3 gap-4 my-6 border border-gray-300 p-4 rounded">
       <div><span class="text-xs text-gray-500 block">Véhicule</span><strong id="printVeh">-</strong></div>
       <div><span class="text-xs text-gray-500 block">Moyenne mesurée</span><strong id="printAvg">-</strong></div>
-      <div><span class="text-xs text-gray-500 block">Traçabilité Carburant</span><strong>Certifiée (Standard / Excellium)</strong></div>
+      <div><span class="text-xs text-gray-500 block">Traçabilité Carburant</span><strong>Certifiée</strong></div>
     </div>
     <table class="w-full text-left border-collapse text-xs mt-4">
       <thead>
         <tr class="border-b-2 border-black">
           <th class="py-2">Date</th>
           <th class="py-2">Station GPS</th>
-          <th class="py-2">Carburant choisi</th>
+          <th class="py-2">Carburant</th>
           <th class="py-2">Distance</th>
           <th class="py-2">Montant / Litres</th>
           <th class="py-2">Conso Cycle</th>
@@ -346,44 +329,36 @@
       </thead>
       <tbody id="printTableBody"></tbody>
     </table>
-    <div class="mt-10 pt-4 border-t border-gray-400 flex justify-between text-xs">
-      <div>Signature du Vendeur : ___________________________</div>
-      <div>Signature de l'Acquéreur : ___________________________</div>
-    </div>
   </div>
 
   <script>
     const KNOWN_SPECS_DB = [
       { keys: ["mt-07", "mt07", "fz-07"], tank: 14.0, norm: 4.2, cat: "moto", engine: "essence", label: "Yamaha MT-07 (14.0 L)" },
-      { keys: ["mt-09", "mt09"], tank: 14.0, norm: 4.9, cat: "moto", engine: "essence", label: "Yamaha MT-09 (14.0 L)" },
-      { keys: ["tenere", "ténéré", "xtz700"], tank: 16.0, norm: 4.3, cat: "moto", engine: "essence", label: "Yamaha Ténéré 700 (16.0 L)" },
-      { keys: ["xmax", "x-max"], tank: 13.0, norm: 3.2, cat: "moto", engine: "essence", label: "Yamaha XMAX (13.0 L)" },
-      { keys: ["tmax", "t-max"], tank: 15.0, norm: 4.8, cat: "moto", engine: "essence", label: "Yamaha TMAX (15.0 L)" },
-      { keys: ["r1250gs", "1250 gs", "r 1250 gs", "r1200gs", "1200 gs", "1300 gs", "r1300gs"], tank: 20.0, norm: 4.75, cat: "moto", engine: "essence", label: "BMW R GS (20.0 L)" },
-      { keys: ["gsa", "gs adventure"], tank: 30.0, norm: 4.9, cat: "moto", engine: "essence", label: "BMW R GS Adventure (30.0 L)" },
-      { keys: ["s1000rr", "s 1000 rr", "s1000r", "s1000xr"], tank: 16.5, norm: 6.2, cat: "moto", engine: "essence", label: "BMW S 1000 (16.5 L)" },
-      { keys: ["f900r", "f 900 r", "f900xr"], tank: 13.0, norm: 4.2, cat: "moto", engine: "essence", label: "BMW F 900 R/XR (13.0 L)" },
-      { keys: ["f800", "f850", "f750"], tank: 15.0, norm: 4.2, cat: "moto", engine: "essence", label: "BMW Série F (15.0 L)" },
-      { keys: ["z900", "z 900"], tank: 17.0, norm: 5.7, cat: "moto", engine: "essence", label: "Kawasaki Z900 (17.0 L)" },
-      { keys: ["z650", "z 650", "er6", "er-6"], tank: 15.0, norm: 4.3, cat: "moto", engine: "essence", label: "Kawasaki Z650 / ER-6 (15.0 L)" },
-      { keys: ["z800", "z750", "z1000"], tank: 17.0, norm: 5.8, cat: "moto", engine: "essence", label: "Kawasaki Série Z (17.0 L)" },
-      { keys: ["cb650r", "cb 650", "cbr650"], tank: 15.4, norm: 4.9, cat: "moto", engine: "essence", label: "Honda CB650R (15.4 L)" },
-      { keys: ["cb500", "hornet", "cb750"], tank: 15.2, norm: 4.3, cat: "moto", engine: "essence", label: "Honda Hornet / CB (15.2 L)" },
-      { keys: ["africa twin", "crf1000", "crf1100"], tank: 18.8, norm: 4.9, cat: "moto", engine: "essence", label: "Honda Africa Twin (18.8 L)" },
-      { keys: ["gsx-s", "gsxs", "gsx-8s", "sv650", "bandit", "gsxr", "gsx-r"], tank: 14.5, norm: 4.5, cat: "moto", engine: "essence", label: "Suzuki (14.5 L)" },
-      { keys: ["street triple", "speed triple", "trident"], tank: 15.0, norm: 5.1, cat: "moto", engine: "essence", label: "Triumph Roadster (15.0 L)" },
+      { keys: ["mt-09", "mt09", "tracer"], tank: 14.0, norm: 4.9, cat: "moto", engine: "essence", label: "Yamaha MT-09 (14.0 L)" },
+      { keys: ["tenere", "ténéré", "xtz"], tank: 16.0, norm: 4.3, cat: "moto", engine: "essence", label: "Yamaha Ténéré 700 (16.0 L)" },
+      { keys: ["xmax", "x-max", "tmax", "t-max"], tank: 15.0, norm: 4.5, cat: "moto", engine: "essence", label: "Yamaha MAX (15.0 L)" },
+      { keys: ["r1250gs", "1250 gs", "r 1250", "r1200gs", "1200 gs", "1300 gs", "r1300gs"], tank: 20.0, norm: 4.75, cat: "moto", engine: "essence", label: "BMW GS (20.0 L)" },
+      { keys: ["gsa", "adventure"], tank: 30.0, norm: 4.9, cat: "moto", engine: "essence", label: "BMW GS Adventure (30.0 L)" },
+      { keys: ["s1000", "m1000"], tank: 16.5, norm: 6.2, cat: "moto", engine: "essence", label: "BMW S1000 (16.5 L)" },
+      { keys: ["f900", "f800", "f850", "f750"], tank: 15.0, norm: 4.3, cat: "moto", engine: "essence", label: "BMW Série F (15.0 L)" },
+      { keys: ["z900", "z 900", "z800", "z750", "z1000"], tank: 17.0, norm: 5.6, cat: "moto", engine: "essence", label: "Kawasaki Série Z (17.0 L)" },
+      { keys: ["z650", "er6", "ninja 650", "versys"], tank: 15.0, norm: 4.3, cat: "moto", engine: "essence", label: "Kawasaki 650 (15.0 L)" },
+      { keys: ["cb650", "hornet", "cb500", "cb750", "cb1000"], tank: 15.4, norm: 4.7, cat: "moto", engine: "essence", label: "Honda CB / Hornet (15.4 L)" },
+      { keys: ["africa twin", "crf", "nt1100", "transalp"], tank: 18.8, norm: 4.9, cat: "moto", engine: "essence", label: "Honda Trail (18.8 L)" },
+      { keys: ["gsx", "sv650", "v-strom", "hayabusa"], tank: 15.0, norm: 4.6, cat: "moto", engine: "essence", label: "Suzuki (15.0 L)" },
+      { keys: ["street triple", "speed triple", "trident", "bonneville"], tank: 15.0, norm: 5.0, cat: "moto", engine: "essence", label: "Triumph (15.0 L)" },
       { keys: ["tiger"], tank: 20.0, norm: 4.9, cat: "moto", engine: "essence", label: "Triumph Tiger (20.0 L)" },
-      { keys: ["monster", "hypermotard", "scrambler"], tank: 14.0, norm: 5.2, cat: "moto", engine: "essence", label: "Ducati (14.0 L)" },
-      { keys: ["multistrada"], tank: 22.0, norm: 5.8, cat: "moto", engine: "essence", label: "Ducati Multistrada (22.0 L)" },
-      { keys: ["duke", "super duke", "ktm"], tank: 14.8, norm: 4.8, cat: "moto", engine: "essence", label: "KTM Duke / Adventure (14.8 L)" },
-      { keys: ["harley", "sportster", "softail"], tank: 18.9, norm: 5.5, cat: "moto", engine: "essence", label: "Harley-Davidson (18.9 L)" },
-      { keys: ["e39", "520i", "523i", "525i", "528i", "530i", "530d", "525tds"], tank: 70.0, norm: 9.0, cat: "auto", engine: "essence", label: "BMW Série 5 E39 (70.0 L)" },
-      { keys: ["e36", "316i", "318i", "320i", "323i", "325i", "328i"], tank: 62.0, norm: 7.9, cat: "auto", engine: "essence", label: "BMW Série 3 E36 (62.0 L)" },
-      { keys: ["e46", "330ci", "330d", "320d"], tank: 63.0, norm: 7.5, cat: "auto", engine: "essence", label: "BMW Série 3 E46 (63.0 L)" },
-      { keys: ["2008", "bluehdi", "208", "hdi"], tank: 50.0, norm: 4.5, cat: "auto", engine: "diesel", label: "Peugeot 2008 / 208 (50.0 L)" },
-      { keys: ["308", "3008", "508"], tank: 53.0, norm: 5.1, cat: "auto", engine: "diesel", label: "Peugeot 308 / 3008 (53.0 L)" },
-      { keys: ["clio", "captur", "megane", "mégane", "dci"], tank: 48.0, norm: 4.8, cat: "auto", engine: "diesel", label: "Renault Clio / Mégane (48.0 L)" },
-      { keys: ["golf", "polo", "passat", "tdi", "tsi", "audi a3", "audi a4"], tank: 50.0, norm: 5.4, cat: "auto", engine: "essence", label: "VW / Audi (50.0 L)" }
+      { keys: ["ducati", "monster", "scrambler", "panigale", "diavel"], tank: 14.5, norm: 5.3, cat: "moto", engine: "essence", label: "Ducati (14.5 L)" },
+      { keys: ["multistrada", "desertx"], tank: 21.0, norm: 5.6, cat: "moto", engine: "essence", label: "Ducati Trail (21.0 L)" },
+      { keys: ["ktm", "duke", "exc", "smt"], tank: 14.8, norm: 4.8, cat: "moto", engine: "essence", label: "KTM (14.8 L)" },
+      { keys: ["harley", "sportster", "softail", "road glide"], tank: 18.9, norm: 5.5, cat: "moto", engine: "essence", label: "Harley-Davidson (18.9 L)" },
+      { keys: ["e39", "520i", "523i", "525i", "528i", "530i", "530d", "525d", "525tds"], tank: 70.0, norm: 9.0, cat: "auto", engine: "essence", label: "BMW Série 5 E39 (70.0 L)" },
+      { keys: ["e36", "316i", "318i", "320i", "323i", "325i", "328i", "318is", "325tds"], tank: 62.0, norm: 7.8, cat: "auto", engine: "essence", label: "BMW Série 3 E36 (62.0 L)" },
+      { keys: ["e46", "330ci", "330i", "330d", "320d"], tank: 63.0, norm: 7.6, cat: "auto", engine: "essence", label: "BMW Série 3 E46 (63.0 L)" },
+      { keys: ["2008", "208", "bluehdi", "hdi", "puretech"], tank: 50.0, norm: 4.5, cat: "auto", engine: "diesel", label: "Peugeot 208 / 2008 (50.0 L)" },
+      { keys: ["308", "3008", "508", "5008"], tank: 53.0, norm: 5.0, cat: "auto", engine: "diesel", label: "Peugeot 308 / 3008 (53.0 L)" },
+      { keys: ["clio", "captur", "megane", "mégane", "dci", "tce"], tank: 48.0, norm: 4.7, cat: "auto", engine: "diesel", label: "Renault (48.0 L)" },
+      { keys: ["golf", "polo", "passat", "tiguan", "tdi", "tsi", "audi a3", "audi a4"], tank: 50.0, norm: 5.3, cat: "auto", engine: "essence", label: "VW / Audi (50.0 L)" }
     ];
 
     const ENGINE_FUEL_GRADES = {
@@ -394,33 +369,32 @@
         { id: "e85", label: "Superéthanol E85", apiKey: "e85", offset: 0 }
       ],
       diesel: [
-        { id: "gazole_std", label: "Gazole Standard (B7)", apiKey: "gazole", offset: 0 },
+        { id: "gazole_std", label: "Gazole Standard", apiKey: "gazole", offset: 0 },
         { id: "gazole_excellium", label: "Gazole Excellium / Premium+", apiKey: "gazole", offset: 0.090 }
       ]
     };
 
-    const DEFAULT_STATIONS = [
-      { name: "Canteleu — RN138 Route de Dieppe", dist: 0.4, prices: { sp98: 1.839, sp95: 1.799, e10: 1.759, gazole: 1.679, e85: 0.849 } },
-      { name: "Rouen — Quai du Havre", dist: 2.1, prices: { sp98: 1.849, sp95: 1.809, e10: 1.769, gazole: 1.689, e85: 0.849 } },
-      { name: "Petit-Quevilly — Bd Stanislas", dist: 3.4, prices: { sp98: 1.799, sp95: 1.769, e10: 1.729, gazole: 1.649, e85: 0.829 } }
-    ];
-
     let modalCat = 'moto';
-    let isScanningGps = false;
+    let state = {
+      vehicles: {},
+      activeId: null,
+      currentStation: 'Canteleu — RN138 Route de Dieppe',
+      rawStationPrices: { sp98: 1.849, sp95: 1.809, e10: 1.769, gazole: 1.679, e85: 0.849 },
+      nearbyStations: [
+        { name: "Canteleu — RN138 Route de Dieppe", dist: 0.4, prices: { sp98: 1.849, sp95: 1.809, e10: 1.769, gazole: 1.679, e85: 0.849 } },
+        { name: "Rouen — Quai du Havre", dist: 2.1, prices: { sp98: 1.859, sp95: 1.819, e10: 1.779, gazole: 1.689, e85: 0.849 } },
+        { name: "Petit-Quevilly — Bd Stanislas", dist: 3.4, prices: { sp98: 1.799, sp95: 1.759, e10: 1.729, gazole: 1.649, e85: 0.829 } }
+      ]
+    };
 
-    let state = null;
+    // CHARGEMENT SÉCURISÉ ANTI-CRASH
     try {
-      state = JSON.parse(localStorage.getItem('pump_index_v8'));
-    } catch (e) { state = null; }
-
-    if (!state || typeof state !== 'object') {
-      state = {
-        vehicles: {},
-        activeId: null,
-        currentStation: DEFAULT_STATIONS[0].name,
-        rawStationPrices: DEFAULT_STATIONS[0].prices,
-        nearbyStations: DEFAULT_STATIONS
-      };
+      const saved = JSON.parse(localStorage.getItem('pump_index_v8'));
+      if (saved && typeof saved === 'object' && saved.vehicles) {
+        state = Object.assign(state, saved);
+      }
+    } catch (e) {
+      localStorage.removeItem('pump_index_v8');
     }
 
     function saveState() {
@@ -430,11 +404,485 @@
       render();
     }
 
-    function safeReloadApp() {
-      window.location.reload();
+    function hardResetApp() {
+      localStorage.clear();
+      window.location.href = window.location.pathname + '?reset=' + Date.now();
     }
 
     function setModalCategory(cat) {
       modalCat = cat;
       document.getElementById('catMotoBtn').className = cat === 'moto'
-        ? "py-2 rounded-xl border
+        ? "py-2.5 rounded-xl border font-bold text-xs bg-emerald-500 text-black border-emerald-400"
+        : "py-2.5 rounded-xl border font-bold text-xs bg-zinc-950 text-zinc-400 border-zinc-800";
+      document.getElementById('catAutoBtn').className = cat === 'auto'
+        ? "py-2.5 rounded-xl border font-bold text-xs bg-emerald-500 text-black border-emerald-400"
+        : "py-2.5 rounded-xl border font-bold text-xs bg-zinc-950 text-zinc-400 border-zinc-800";
+      if (cat === 'moto') document.getElementById('newVehEngineFamily').value = 'essence';
+      autoLookupSpecs();
+    }
+
+    function autoLookupSpecs() {
+      const q = (document.getElementById('newVehName').value || '').toLowerCase().trim();
+      const statusEl = document.getElementById('specStatusText');
+      const tankInput = document.getElementById('newVehTank');
+      const normInput = document.getElementById('newVehNorm');
+
+      if (!q) {
+        tankInput.value = modalCat === 'moto' ? 17 : 60;
+        normInput.value = modalCat === 'moto' ? 4.5 : 7.0;
+        statusEl.innerText = `⚡ Calibrage standard (${modalCat === 'moto' ? 'Moto 17L' : 'Voiture 60L'})`;
+        updateSpecLabels();
+        return;
+      }
+
+      for (let i = 0; i < KNOWN_SPECS_DB.length; i++) {
+        const item = KNOWN_SPECS_DB[i];
+        if (item.keys.some(k => q.includes(k))) {
+          tankInput.value = item.tank;
+          normInput.value = item.norm;
+          modalCat = item.cat;
+          document.getElementById('catMotoBtn').className = modalCat === 'moto'
+            ? "py-2.5 rounded-xl border font-bold text-xs bg-emerald-500 text-black border-emerald-400"
+            : "py-2.5 rounded-xl border font-bold text-xs bg-zinc-950 text-zinc-400 border-zinc-800";
+          document.getElementById('catAutoBtn').className = modalCat === 'auto'
+            ? "py-2.5 rounded-xl border font-bold text-xs bg-emerald-500 text-black border-emerald-400"
+            : "py-2.5 rounded-xl border font-bold text-xs bg-zinc-950 text-zinc-400 border-zinc-800";
+
+          if (q.includes('dci') || q.includes('hdi') || q.includes('tdi') || q.includes('530d') || q.includes('320d') || q.includes('330d') || q.includes('tds')) {
+            document.getElementById('newVehEngineFamily').value = 'diesel';
+          } else {
+            document.getElementById('newVehEngineFamily').value = item.engine;
+          }
+          statusEl.innerText = `✅ Détecté : ${item.label}`;
+          updateSpecLabels();
+          return;
+        }
+      }
+
+      clearTimeout(window._specTimer);
+      window._specTimer = setTimeout(() => searchOnlineSpecs(true), 450);
+    }
+
+    function updateSpecLabels() {
+      const t = parseFloat(document.getElementById('newVehTank').value) || 17;
+      const n = parseFloat(document.getElementById('newVehNorm').value) || 4.5;
+      document.getElementById('detectedTankLabel').innerText = `${t.toFixed(1)} Litres`;
+      document.getElementById('detectedNormLabel').innerText = `${n.toFixed(1)} L/100`;
+    }
+
+    async function searchOnlineSpecs(silent) {
+      const q = (document.getElementById('newVehName').value || '').trim();
+      if (q.length < 3) return;
+      const statusEl = document.getElementById('specStatusText');
+      if (!silent) statusEl.innerText = `🌐 Recherche du réservoir en ligne...`;
+
+      try {
+        const url = `https://fr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q + ' réservoir litres')}&utf8=&format=json&origin=*`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.query && data.query.search && data.query.search.length > 0) {
+          const text = data.query.search.map(s => s.snippet.replace(/<[^>]+>/g, '')).join(' ');
+          const match = text.match(/(\d{2}(?:[.,]\d)?)\s*(?:litres|L\b|l\b)/i);
+          if (match) {
+            const liters = parseFloat(match[1].replace(',', '.'));
+            if (liters >= 8 && liters <= 110) {
+              document.getElementById('newVehTank').value = liters;
+              document.getElementById('newVehNorm').value = liters < 28 ? 4.7 : 7.0;
+              statusEl.innerText = `🌐 Réservoir officiel trouvé : ${liters} L`;
+              updateSpecLabels();
+              return;
+            }
+          }
+        }
+        if (!silent) statusEl.innerText = `⚡ Réservoir calibré : ${document.getElementById('newVehTank').value} L`;
+      } catch (e) {
+        if (!silent) statusEl.innerText = `⚡ Réservoir calibré : ${document.getElementById('newVehTank').value} L`;
+      }
+    }
+
+    function openVehicleModal() {
+      document.getElementById('newVehName').value = '';
+      document.getElementById('newVehPlate').value = '';
+      setModalCategory('moto');
+      const m = document.getElementById('vehicleModal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function closeVehicleModal() {
+      const m = document.getElementById('vehicleModal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function saveNewVehicle() {
+      const rawName = (document.getElementById('newVehName').value || '').trim();
+      const name = rawName || (modalCat === 'moto' ? 'Ma Moto' : 'Ma Voiture');
+      const plate = (document.getElementById('newVehPlate').value || '').trim() || 'AA-000-AA';
+      const engineFamily = document.getElementById('newVehEngineFamily').value || 'essence';
+      const tank = parseFloat(document.getElementById('newVehTank').value) || (modalCat === 'moto' ? 17 : 60);
+      const norm = parseFloat(document.getElementById('newVehNorm').value) || (modalCat === 'moto' ? 4.5 : 7.0);
+
+      const id = 'v_' + Date.now();
+      const defaultGrade = ENGINE_FUEL_GRADES[engineFamily][0].id;
+
+      state.vehicles[id] = {
+        id,
+        category: modalCat,
+        short: name.substring(0, 18),
+        name,
+        tank,
+        norm,
+        plate,
+        engineFamily,
+        selectedGradeId: defaultGrade,
+        pendingKm: 0,
+        pendingLiters: 0,
+        pendingEuro: 0,
+        entries: []
+      };
+      state.activeId = id;
+      closeVehicleModal();
+      saveState();
+    }
+
+    function selectVehicle(id) {
+      state.activeId = id;
+      saveState();
+    }
+
+    function deleteVehicle(id, ev) {
+      if (ev) ev.stopPropagation();
+      delete state.vehicles[id];
+      const keys = Object.keys(state.vehicles);
+      state.activeId = keys.length > 0 ? keys[0] : null;
+      saveState();
+    }
+
+    function selectFuelGrade(gradeId) {
+      const v = state.vehicles[state.activeId];
+      if (!v) return;
+      v.selectedGradeId = gradeId;
+      saveState();
+      previewCalculation();
+    }
+
+    function getActiveGradeObject() {
+      const v = state.vehicles[state.activeId];
+      if (!v) return ENGINE_FUEL_GRADES.essence[0];
+      const list = ENGINE_FUEL_GRADES[v.engineFamily || 'essence'] || ENGINE_FUEL_GRADES.essence;
+      return list.find(g => g.id === v.selectedGradeId) || list[0];
+    }
+
+    function getActiveLiterPrice() {
+      const g = getActiveGradeObject();
+      const base = (state.rawStationPrices && state.rawStationPrices[g.apiKey]) ? state.rawStationPrices[g.apiKey] : 1.839;
+      return +(base + (g.offset || 0)).toFixed(3);
+    }
+
+    function getDistanceKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    async function fetchOfficialGovStations(lat, lon, isRealGps) {
+      const badge = document.getElementById('gpsStatusBadge');
+      const promptBtn = document.getElementById('iosGpsPromptBtn');
+      try {
+        const url = `https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records?where=within_distance(geom, geom'POINT(${lon} ${lat})', 15km)&limit=20`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.results && data.results.length > 0) {
+          const valid = data.results.map(r => {
+            const sLat = r.geom ? r.geom.lat : lat;
+            const sLon = r.geom ? r.geom.lon : lon;
+            const dist = getDistanceKm(lat, lon, sLat, sLon);
+            const ville = r.ville ? r.ville.charAt(0).toUpperCase() + r.ville.slice(1).toLowerCase() : 'Station';
+            const adresse = r.adresse ? r.adresse.substring(0, 22) : '';
+            const e10 = parseFloat(r.e10_prix) || 1.769;
+            return {
+              name: `${ville} — ${adresse}`,
+              dist,
+              prices: {
+                sp98: parseFloat(r.sp98_prix) || +(e10 + 0.08).toFixed(3),
+                sp95: parseFloat(r.sp95_prix) || +(e10 + 0.03).toFixed(3),
+                e10: e10,
+                gazole: parseFloat(r.gazole_prix) || 1.679,
+                e85: parseFloat(r.e85_prix) || 0.849
+              }
+            };
+          }).sort((a, b) => a.dist - b.dist).slice(0, 4);
+
+          if (valid.length > 0) {
+            state.nearbyStations = valid;
+            state.currentStation = valid[0].name;
+            state.rawStationPrices = valid[0].prices;
+            if (isRealGps && promptBtn) promptBtn.classList.add('hidden');
+            if (badge) badge.innerText = isRealGps
+              ? `🟢 GPS iOS Actif • Station à ${valid[0].dist.toFixed(1)} km`
+              : `🟢 Tarif Gouv.fr Actif (${valid[0].name.split('—')[0]})`;
+            saveState();
+          }
+        }
+      } catch (e) {}
+    }
+
+    function requestIOSLocation() {
+      const badge = document.getElementById('gpsStatusBadge');
+      if (badge) badge.innerText = `🛰️ Recherche position GPS iOS...`;
+      if (!("geolocation" in navigator)) {
+        fetchOfficialGovStations(49.4431, 1.0312, false);
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => fetchOfficialGovStations(pos.coords.latitude, pos.coords.longitude, true),
+        () => {
+          if (badge) badge.innerText = `🟡 Tarif Gouv.fr Secteur Rouen (Active Safari dans Réglages > Localisation)`;
+          fetchOfficialGovStations(49.4431, 1.0312, false);
+        },
+        { enableHighAccuracy: true, timeout: 7000, maximumAge: 0 }
+      );
+    }
+
+    function pickNearbyStation(idx) {
+      const st = state.nearbyStations[idx];
+      if (!st) return;
+      state.currentStation = st.name;
+      state.rawStationPrices = st.prices;
+      saveState();
+      previewCalculation();
+    }
+
+    function formatSIV(input) {
+      let raw = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      let out = '';
+      if (raw.length > 0) out += raw.substring(0, 2);
+      if (raw.length > 2) out += '-' + raw.substring(2, 5);
+      if (raw.length > 5) out += '-' + raw.substring(5, 7);
+      input.value = out;
+      if (input.id === 'sivInput' && state.activeId && state.vehicles[state.activeId]) {
+        state.vehicles[state.activeId].plate = out;
+        saveState();
+      }
+    }
+
+    function previewCalculation() {
+      const v = state.vehicles[state.activeId];
+      if (!v) return;
+      const km = parseFloat(document.getElementById('kmInput').value) || 0;
+      const euro = parseFloat(document.getElementById('euroInput').value) || 0;
+      const price = getActiveLiterPrice();
+      const banner = document.getElementById('detectionBanner');
+      if (km <= 0 || euro <= 0) { banner.classList.add('hidden'); return; }
+
+      const liters = euro / price;
+      const isAppoint = liters < (v.tank * 0.42) && (km / liters) > 16;
+      banner.classList.remove('hidden');
+      if (isAppoint) {
+        banner.className = "rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between bg-amber-500/15 border border-amber-500/40 text-amber-300";
+        banner.innerHTML = `<span>⚠️ APPOINT (${liters.toFixed(1)} L / ${v.tank} L)</span><span>En réserve</span>`;
+      } else {
+        const totalL = liters + (v.pendingLiters || 0);
+        const totalKm = km + (v.pendingKm || 0);
+        const conso = ((totalL / totalKm) * 100).toFixed(2);
+        banner.className = "rounded-xl px-3 py-2 text-xs font-bold flex items-center justify-between bg-emerald-500/15 border border-emerald-500/40 text-emerald-300";
+        banner.innerHTML = `<span>✅ PLEIN (${liters.toFixed(1)} L / ${v.tank} L)</span><span>${conso} L/100</span>`;
+      }
+    }
+
+    function addEntry() {
+      const v = state.vehicles[state.activeId];
+      if (!v) return;
+      const km = parseFloat(document.getElementById('kmInput').value);
+      const euro = parseFloat(document.getElementById('euroInput').value);
+      const price = getActiveLiterPrice();
+      if (!km || !euro) return;
+
+      const gradeObj = getActiveGradeObject();
+      const liters = euro / price;
+      const isAppoint = liters < (v.tank * 0.42) && (km / liters) > 16;
+      const dateStr = new Date().toLocaleDateString('fr-FR');
+      const station = state.currentStation;
+
+      if (!v.entries) v.entries = [];
+      if (isAppoint) {
+        v.pendingKm = (v.pendingKm || 0) + km;
+        v.pendingLiters = (v.pendingLiters || 0) + liters;
+        v.pendingEuro = (v.pendingEuro || 0) + euro;
+        v.entries.unshift({ date: dateStr, station, fuelLabel: gradeObj.label, type: 'APPOINT', km, euro, liters, conso: null });
+      } else {
+        const totalKm = km + (v.pendingKm || 0);
+        const totalLiters = liters + (v.pendingLiters || 0);
+        const conso = (totalLiters / totalKm) * 100;
+        v.entries.unshift({ date: dateStr, station, fuelLabel: gradeObj.label, type: 'PLEIN COMPLET', km: totalKm, euro: euro + (v.pendingEuro || 0), liters: totalLiters, conso });
+        v.pendingKm = 0; v.pendingLiters = 0; v.pendingEuro = 0;
+      }
+
+      document.getElementById('kmInput').value = '';
+      document.getElementById('euroInput').value = '';
+      document.getElementById('detectionBanner').classList.add('hidden');
+      saveState();
+    }
+
+    function clearHistory() {
+      const v = state.vehicles[state.activeId];
+      if (!v) return;
+      v.entries = []; v.pendingKm = 0; v.pendingLiters = 0; v.pendingEuro = 0;
+      saveState();
+    }
+
+    function toggleWidgetMode() {
+      const dash = document.getElementById('mainDashboard');
+      const btn = document.getElementById('widgetBtn');
+      dash.classList.toggle('hidden');
+      btn.innerText = dash.classList.contains('hidden') ? '📊 Complet' : '⚡ Widget';
+    }
+
+    function renderChart(norm, fullEntries) {
+      const svg = document.getElementById('consoChart');
+      if (!svg) return;
+      const points = fullEntries.slice(0, 7).reverse();
+      if (points.length === 0) {
+        svg.innerHTML = `<text x="160" y="65" text-anchor="middle" fill="#71717a" font-size="11" font-weight="600">Enregistre un plein pour voir ta courbe</text>`;
+        return;
+      }
+      const values = points.map(p => p.conso);
+      const minVal = Math.min(...values, norm) - 1.0;
+      const maxVal = Math.max(...values, norm) + 1.0;
+      const w = 320, h = 110, padX = 24, padY = 18;
+      const getY = (val) => padY + ((maxVal - val) / (maxVal - minVal || 1)) * (h - padY * 2);
+      const getX = (i) => points.length === 1 ? w / 2 : padX + (i / (points.length - 1)) * (w - padX * 2);
+      const normY = getY(norm);
+      const coords = points.map((p, i) => ({ x: getX(i), y: getY(p.conso), val: p.conso, date: p.date.slice(0, 5) }));
+      const pathD = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
+      svg.innerHTML = `
+        <line x1="${padX}" y1="${normY}" x2="${w - padX}" y2="${normY}" stroke="#52525b" stroke-dasharray="4 4" stroke-width="1.5"/>
+        <text x="${w - padX}" y="${normY - 5}" text-anchor="end" fill="#a1a1aa" font-size="9">Norme ${norm.toFixed(1)}L</text>
+        <path d="${pathD}" fill="none" stroke="#10b981" stroke-width="2.8" stroke-linecap="round"/>
+        ${coords.map(c => `
+          <circle cx="${c.x}" cy="${c.y}" r="4" fill="#09090b" stroke="#10b981" stroke-width="2.5"/>
+          <text x="${c.x}" y="${c.y - 9}" text-anchor="middle" fill="#f4f4f5" font-size="9.5" font-weight="700">${c.val.toFixed(1)}</text>
+        `).join('')}
+      `;
+    }
+
+    function render() {
+      const vehList = Object.values(state.vehicles || {});
+      const emptyCard = document.getElementById('emptyGarageCard');
+      const activeContainer = document.getElementById('activeVehicleContainer');
+      const pills = document.getElementById('vehiclePills');
+
+      if (vehList.length === 0) {
+        pills.innerHTML = '';
+        emptyCard.classList.remove('hidden');
+        activeContainer.classList.add('hidden');
+        return;
+      }
+
+      emptyCard.classList.add('hidden');
+      activeContainer.classList.remove('hidden');
+
+      if (!state.activeId || !state.vehicles[state.activeId]) {
+        state.activeId = vehList[0].id;
+      }
+
+      const v = state.vehicles[state.activeId];
+
+      pills.innerHTML = vehList.map(veh => `
+        <div onclick="selectVehicle('${veh.id}')" class="shrink-0 pl-3 pr-2 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-2 cursor-pointer ${veh.id === state.activeId ? 'bg-emerald-500 text-black border-emerald-400' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}">
+          <span>${veh.category === 'moto' ? '🏍️' : '🚗'} ${veh.short}</span>
+          <button type="button" onclick="deleteVehicle('${veh.id}', event)" class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black">✕</button>
+        </div>
+      `).join('');
+
+      const grades = ENGINE_FUEL_GRADES[v.engineFamily || 'essence'] || ENGINE_FUEL_GRADES.essence;
+      if (!v.selectedGradeId) v.selectedGradeId = grades[0].id;
+      const activeGrade = getActiveGradeObject();
+      const activePrice = getActiveLiterPrice();
+
+      document.getElementById('fuelGradeBar').innerHTML = grades.map(g => {
+        const isSel = g.id === v.selectedGradeId;
+        return `
+          <button type="button" onclick="selectFuelGrade('${g.id}')" class="py-2 px-2.5 rounded-xl text-[11px] font-extrabold border text-left truncate ${isSel ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300' : 'bg-zinc-900 border-zinc-800 text-zinc-400'}">
+            ${isSel ? '● ' : ''}${g.label}
+          </button>
+        `;
+      }).join('');
+
+      document.getElementById('stationName').innerText = state.currentStation;
+      document.getElementById('fuelTypeLabel').innerText = `${activeGrade.label} • Réservoir ${v.tank} L`;
+      document.getElementById('autoPriceDisplay').innerText = activePrice.toFixed(3);
+
+      const nearBar = document.getElementById('nearbyStationsBar');
+      if (state.nearbyStations && state.nearbyStations.length > 0) {
+        nearBar.innerHTML = state.nearbyStations.map((st, idx) => `
+          <button type="button" onclick="pickNearbyStation(${idx})" class="shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-bold border ${st.name === state.currentStation ? 'bg-zinc-800 text-emerald-400 border-emerald-500/40' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}">
+            ${st.dist.toFixed(1)}km • ${st.name.split('—')[0]}
+          </button>
+        `).join('');
+      }
+
+      document.getElementById('sivInput').value = v.plate;
+      document.getElementById('vehTitle').innerText = v.name;
+      document.getElementById('vehSpecs').innerText = `Réservoir ${v.tank} L • Norme ${v.norm.toFixed(1)} L/100`;
+      document.getElementById('reserveBadge').innerText = `${(v.pendingLiters || 0).toFixed(1)} L / ${v.pendingKm || 0} km`;
+      document.getElementById('chartNormBadge').innerText = `Norme : ${v.norm.toFixed(1)} L`;
+
+      const entries = v.entries || [];
+      const fullEntries = entries.filter(e => e.conso !== null);
+      const avg = fullEntries.length ? (fullEntries.reduce((a, b) => a + b.conso, 0) / fullEntries.length) : v.norm;
+      const totalEuro = entries.reduce((a, b) => a + b.euro, 0);
+      const totalKm = entries.reduce((a, b) => a + b.km, 0) || 1;
+
+      document.getElementById('statConso').innerText = fullEntries.length ? avg.toFixed(1) : v.norm.toFixed(1);
+      document.getElementById('statCostKm').innerText = entries.length ? (totalEuro / totalKm).toFixed(3) : '0.000';
+      document.getElementById('statTotalEuro').innerText = `Cumul : ${totalEuro.toFixed(2)} €`;
+
+      renderChart(v.norm, fullEntries);
+
+      const list = document.getElementById('historyList');
+      const printBody = document.getElementById('printTableBody');
+      if (!entries.length) {
+        list.innerHTML = `<div class="text-zinc-500 py-4 text-center">Aucun passage enregistré.</div>`;
+        printBody.innerHTML = '';
+      } else {
+        list.innerHTML = entries.map(e => `
+          <div class="flex items-center justify-between bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5">
+            <div>
+              <div class="font-bold text-white">${e.date} • ${e.station}</div>
+              <div class="text-[11px] text-emerald-400 font-semibold">${e.fuelLabel || ''}</div>
+              <div class="text-[11px] text-zinc-400 mono">${e.km} km • ${e.euro.toFixed(2)} € (${e.liters.toFixed(1)} L)</div>
+            </div>
+            <span class="px-2 py-1 rounded-lg text-[11px] font-bold mono ${e.conso ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-400'}">
+              ${e.conso ? e.conso.toFixed(2) + ' L/100' : 'APPOINT'}
+            </span>
+          </div>
+        `).join('');
+
+        printBody.innerHTML = entries.map(e => `
+          <tr class="border-b border-gray-200">
+            <td class="py-2">${e.date}</td>
+            <td class="py-2">${e.station}</td>
+            <td class="py-2 font-bold">${e.fuelLabel || e.type}</td>
+            <td class="py-2">${e.km} km</td>
+            <td class="py-2">${e.euro.toFixed(2)} € (${e.liters.toFixed(1)} L)</td>
+            <td class="py-2 font-bold">${e.conso ? e.conso.toFixed(2) + ' L/100' : 'Reporté'}</td>
+          </tr>
+        `).join('');
+      }
+
+      document.getElementById('printSIV').innerText = v.plate;
+      document.getElementById('printVeh').innerText = `${v.name} (${v.tank} L)`;
+      document.getElementById('printAvg').innerText = avg.toFixed(2) + ' L/100 km';
+    }
+
+    render();
+    fetchOfficialGovStations(49.4431, 1.0312, false);
+  </script>
+</body>
+</html>
